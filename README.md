@@ -1,11 +1,38 @@
-[![Stories in Ready](https://badge.waffle.io/legitbiz/SealsOfFate.svg?label=ready&title=Ready)](http://waffle.io/legitbiz/SealsOfFate)
+Project-Wide Issues on Waffle: [![Stories in Ready](https://badge.waffle.io/legitbiz/SealsOfFate.svg?label=ready&title=Ready)](http://waffle.io/legitbiz/SealsOfFate)
 
-# SealsOfFate
-A fork of the general SealsOfFate project for personal work, currently focusing on AI development. Like the main project, it is licensed under the MIT license, see LICENSE for details.
+# Seals Of Fate: Hats of Destiny; Icebergs of Doom
 
-###Week 3 Report###
-Code progress has been slower than expected over these last three weeks. Getting Unity and Git to interface has been unexpectedly difficult, leading to delays in setting up the project basics. Thus, the majority of the time has been spent doing research and design. In addition to the standard Unity tutorials, I've found a fantastic resource in "Programming Game AI by Example". It has been an excellent and practical guide that directly covers several of my goals.
+Copyright © 2017 A Legitimate Buisness
 
-My initial prototype will include a single melee enemy. This enemy will only be active when the player is in the room, and when activated will charge at the player and attack, pathing aroudn obstacles. Once that initial protoype is finished, a secondary prototype is to implement a ranged enemy that attempts to maintain a minimum range from the player. These enemies will e implemented using a simple state machine with states for asleep, alert, seek, attack, and flee (for the ranged enemy). Pathfinding will be handled by A*.
+Seals of Fate is a prototype rogue-like built in the Unity engine using C#. 
 
-Fortunately, it seems we've sorted out our issues with git, and have the basic framework needed to start implementing and testing the AI. I anticipate work to go much faster now.
+## Setup instructions
+
+1. The game is being developed in the latest version of the Unity game engine and is still in active development. As such, version 5.6 or later of the Unity editor is required to be installed to open and run the project.
+
+1. Clone this repository into a directory on your local machine.
+
+1. Open the Unity editor and choose open project in the splash page. Navigate to where you cloned the repository and open the entire folder.
+
+1.  To play, hit the play arrow in the center-top of the screen.
+
+## How to Play
+
+Move with the arrow keys. Play moves in short turn-steps, after each move, all enemies and other entities in the game world move after each of your moves.
+
+## Planned Features
+
+
+## Status
+
+* Project-Wide issues are on [Waffle.io](http://waffle.io/legitbiz/SealsOfFate) and on the [github issues page](https://github.com/legitbiz/SealsOfFate/issues).
+
+* AI specific issues and project status can be found on the [github kanban board](https://github.com/Zonr0/SealsOfFate/projects/1) on the AI fork. If there is a conflict between the two project boards, the project-wide ones take precedence.
+
+### Overview
+Currently, focus is on implementing MVP features in order to create a playable prototype with all basic features by the end of August. Right now, a simple 8x8 room is procedurally generated around the player along with a few enemies who have a limited ability to follow the player around.
+
+## License
+
+This work is made available under the MIT license. Please see the file 'LICENSE' in this distribution for license terms.
+
