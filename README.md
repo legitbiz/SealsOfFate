@@ -2,13 +2,13 @@ Project-Wide Issues on Waffle: [![Stories in Ready](https://badge.waffle.io/legi
 
 # Seals Of Fate: Hats of Destiny; Icebergs of Doom
 
-Copyright © 2017 A Legitimate Buisness
+Copyright © 2017 A Legitimate Buisness, LLC
 
 Seals of Fate is a prototype rogue-like built in the Unity engine using C#. 
 
 ## Setup instructions
 
-1. The game is being developed in the latest version of the Unity game engine and is still in active development. As such, version 5.6 or later of the Unity editor is required to be installed to open and run the project.
+1. The game is being actively developed in the latest version of the Unity game engine . Unity v5.6 or later is required to open and run the project.
 
 1. Clone this repository into a directory on your local machine.
 
