@@ -13,7 +13,15 @@ public class Graph<T> {
         }
     }
 
+    public void AddVertex(T toAdd) {
+        adjacencyList.Add(new Vertex<T>(toAdd));
+    }
+
     private class Vertex<T> {
+        public Vertex(T initialValue) {
+            Data = initialValue;    
+        }
+
         public T Data { public get; private set; }
 
         private List<Edge> edgeList;
