@@ -2,7 +2,7 @@ Project-Wide Issues on Waffle: [![Stories in Ready](https://badge.waffle.io/legi
 
 # Seals Of Fate: Hats of Destiny; Icebergs of Doom
 
-Copyright © 2017 A Legitimate Business, LLC. and the following individuals: Brandon Craig, Evan French, Connor Kuehl, Jeremiah Peschka, Andrew Waugh, Douglas Whitley III
+Copyright © 2017 A Legitimate Business, LLC. and the following individuals: Brandon Craig, Evan French, Matthew Gieger, Connor Kuehl, Jeremiah Peschka, Andrew Waugh, Douglas Whitley III
 
 Seals of Fate is a prototype rogue-like built in the Unity engine using C#. 
 
