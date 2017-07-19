@@ -2,6 +2,7 @@
 
 public class Graph<T> {
     private List<Vertex<T>> adjacencyList;
+    public IEnumerable<Vertex<T>> AdjacencyList { public get { return adjacencyList; } }
 
     public Graph() {
         adjacencyList = new List<Vertex<T>>();
@@ -24,7 +25,7 @@ public class Graph<T> {
 
         public T Data { public get; private set; }
 
-        private List<Edge> edgeList;
+        private List<Edge> edgeList = new List<Edge>();
     }
 
     private class Edge {
