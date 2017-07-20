@@ -4,7 +4,7 @@
 /// A very low-level, generic Graph data structure. This class is intended to
 /// be extended and built upon, not used on its own for any real heavy lifting.
 /// </summary>
-public class Graph<T> {
+public class Graph<T> where T : System.IEquatable<T> {
     private readonly List<Vertex<T>> _adjacencyList;
     /// <summary>Exposes the Adjacency List for algorithmic convenience.</summary>
     public IEnumerable<Vertex<T>> AdjacencyList { get { return _adjacencyList; } }
@@ -38,7 +38,11 @@ public class Graph<T> {
         if (source == null || destination == null) {
             return false;
         }
-
+        foreach (var vertex in _adjacencyList) {
+            if (vertex.Equals(source)) {
+                //vertex.
+            }
+        }
         return true;
     }
 
@@ -53,11 +57,19 @@ public class Graph<T> {
         public Vertex(V initialValue) {
             Data = initialValue;    
         }
+
+        public void AddEdge(Vertex<T> destination) {
+            _edgeList.Add(new Edge(destination));
+        }
     }
 
     /// <summary>Represents an Edge between two Vertices.</summary>
     public class Edge {
         /// <summary>A reference to the Vertex that this edge leads to.</summary>
          public Vertex<T> AdjacentTo { get; set; }
+
+         public Edge(Vertex<T> adjacentTo) {
+             AdjacentTo = adjacentTo;
+         }
     }
 }
