@@ -19,6 +19,8 @@ public class Graph<T> {
     private readonly List<Vertex<T>> _adjacencyList;
     /// <summary>Exposes the Adjacency List for algorithmic convenience.</summary>
     public IEnumerable<Vertex<T>> AdjacencyList { get { return _adjacencyList; } }
+    /// <summary>The number of Vertices in the Graph.</summary>
+    public int Count { get { return _adjacencyList.Count ; } }
 
     public Graph() {
         _adjacencyList = new List<Vertex<T>>();
@@ -73,9 +75,6 @@ public class Graph<T> {
         /// <summary>Adds an Edge from this Vertex to the provided Vertex.</summary>
         /// <param name="destination">The Vertex being made adjacent to this one.</param>
         public void AddEdge(Vertex<T> destination) {
-            if (this == destination) {
-                return;
-            }
             _edgeList.Add(new Edge(destination));
         }
 
