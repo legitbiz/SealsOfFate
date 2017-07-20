@@ -76,6 +76,9 @@ public class Graph<T> {
         /// <summary>Adds an Edge from this Vertex to the provided Vertex.</summary>
         /// <param name="destination">The Vertex being made adjacent to this one.</param>
         public void AddEdge(Vertex<T> destination) {
+            if (this == destination) {
+                return;
+            }
             _edgeList.Add(new Edge(destination));
         }
 
