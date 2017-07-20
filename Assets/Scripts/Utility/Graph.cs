@@ -41,10 +41,7 @@ public class Graph<T> {
     /// <summary>Adds an edge between the specified vertices.</summary>
     /// <param name="source">The source vertex.</param>
     /// <param name="destination">The destination vertex.</param>
-    /// <remarks>
-    /// The edge is inserted from Source -> Destination. Remember, this is an
-    /// unweighted Graph, and this method only inserts an edge in one direction.
-    /// </remarks>
+    /// <remarks>The edge is inserted from Source -> Destination.</remarks>
     /// <returns>
     /// True if an edge was established, False if one or more arguments
     /// could not be resolved to valid vertices.
