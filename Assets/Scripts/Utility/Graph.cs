@@ -68,10 +68,18 @@ public class Graph<T> {
         return true;
     }
 
+    /// <summary>
+    /// Provides an IEnumerable to iterate over all adjacent 
+    /// vertices to the specified vertex.
+    /// </summary>
+    /// <param name="vertex">The Vertex whose neighbors to iterate over.</param>
     public IEnumerable<Vertex<T>> Neighbors(Vertex<T> vertex) {
         return vertex.Neighbors();
     }
 
+    /// <summary>
+    /// Clears/removes all vertices from the Graph.
+    /// </summary>
     public void Clear() {
         _adjacencyList.Clear();
     }
