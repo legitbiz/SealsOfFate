@@ -47,7 +47,7 @@ public class Graph<T> {
         /// <summary>The data held by the Vertex.</summary>
         public V Data { get; private set; }
         /// <summary>The list of adjacent Vertices.</summary>
-        private readonly List<Edge> edgeList = new List<Edge>();
+        private readonly List<Edge> _edgeList = new List<Edge>();
 
         /// <summary>Constructs the Vertex with the initial value.</summary>
         public Vertex(V initialValue) {
@@ -55,7 +55,7 @@ public class Graph<T> {
         }
     }
 
-    /// <summary>Represents an Edge between two Vertices.`</summary>
+    /// <summary>Represents an Edge between two Vertices.</summary>
     public class Edge {
         /// <summary>A reference to the Vertex that this edge leads to.</summary>
          public Vertex<T> AdjacentTo { get; set; }
