@@ -1,73 +1,95 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿// Copyright 2017 Andrew Waugh, Licensed under the terms of the MIT license.
 
-/******************************************************************************
- * File     : StateMachine.cs
- * Purpose  : StateMachine is used in the AI system to handle the switching of
- * states. Actual AI Behavior itself is NOT handled by this class, it merely 
- * facilitates the swapping in and out of states.
- * Notes    : Based off of the FSM implementation described in
- * "Programming Game AI By Example" by Mat Buckland. Modified for C# and the
- * needs of SealsOfFate.
- ******************************************************************************/
- //Copyright 2017 Andrew Waugh, Licensed under the terms of the MIT license.
-
-public class StateMachine<EntityT> {
+/// <summary>
+///     StateMachine is used in the AI system to handle the switching of
+///     states. Actual AI Behavior itself is NOT handled by this class, it
+///     merely facilitates the swapping in and out of states.
+/// </summary>
+/// <remarks>
+///     Based off of the FSM implementation described in "Programming Game
+///     AI By Example" by Mat Buckland. Modified for C# and the needs of
+///     SealsOfFate.
+/// </remarks>
+/// <typeparam name="EntityT"></typeparam>
+public class StateMachine<EntityT>
+{
+    private readonly EntityT _owner; // The agent that is using this state machine
+    private State<EntityT> _currentState; // The current state of the agent
+    private State<EntityT> _previousState; // A record of the previous state of the agent
 
     public StateMachine(EntityT owner)
     {
-        this.owner = owner;
-        this.currentState = null;
-        this.previousState = null;
-        this.globalState = null;
+        _owner = owner;
+        _currentState = null;
+        _previousState = null;
+        GlobalState = null;
     }
 
-    
-    /*
-	// Use this for initialization
-	void Start () {
-		
-	}
-    */
-	
-	// If we decide to extend StateMachine from MonoBehavior, than Update will be called once per frame. Currently, it is called manually.
-	public void Update () {
-		//If we have a defined global state, execute it first
-        if (globalState != null) { globalState.Execute(owner); }
-        //Now run the current state
-        if (currentState != null) { currentState.Execute(owner); }
-	}
+    /// <summary>
+    ///     Current agent state
+    /// </summary>
+    public State<EntityT> CurrentState
+    {
+        get { return _currentState; }
+        set
+        {
+            _currentState = value;
+            _currentState.Enter(_owner);
+        }
+    }
+
+    /// <summary>
+    ///     Global state that is checked every update.
+    /// </summary>
+    public State<EntityT> GlobalState { get; set; }
+
+    /// <summary>
+    ///     Calls update.
+    /// </summary>
+    /// <remarks>
+    ///     This must be called manually since StateMachine does not inherit from MonoBehaviour.
+    /// </remarks>
+    // 
+    public void Update()
+    {
+        // If we have a defined global state, execute it first
+        if (GlobalState != null)
+        {
+            GlobalState.Execute(_owner);
+        }
+
+        // Now run the current state
+        if (_currentState != null)
+        {
+            _currentState.Execute(_owner);
+        }
+    }
 
     public void ChangeState(State<EntityT> newState)
     {
         //save our current state as the previous
-        previousState = currentState;
+        _previousState = _currentState;
         //Call our current state's exit behavior
-        currentState.Exit(owner);
+        _currentState.Exit(_owner);
         //Update our current state to the new state
-        currentState = newState;
+        _currentState = newState;
         //Call the new state's entrance behavior
-        currentState.Enter(owner);
+        _currentState.Enter(_owner);
     }
 
-    //Reverts to the previous state
-    public void RevertState() { ChangeState(previousState); }
+    /// <summary>
+    ///     Reverts to the previous state.
+    /// </summary>
+    public void RevertState()
+    {
+        ChangeState(_previousState);
+    }
 
-    //Checks to see if the state machine is in a particular state
+    /// <summary>
+    ///     Checks to see if the state machine is in a particular state
+    /// </summary>
     public bool IsInState(State<EntityT> check)
     {
-        //Use RTTI to check if they're the same type.
-        if (check.GetType() == currentState.GetType()) { return true; }
-        else { return false; }
+        return check.GetType() == _currentState.GetType();
     }
-
-    private EntityT owner;                  //The agent that is using this state machine
-    private State<EntityT> currentState;    //The current state of the agent
-    private State<EntityT> previousState;   //A record of the previous state of the agent
-    private State<EntityT> globalState;     //A global state that is checked every update.
-
-    //Properties for states. Note these are only intended for the initial setup.
-    public State<EntityT> CurrentState { get { return this.currentState; } set { currentState = value; currentState.Enter(owner); } }
-    public State<EntityT> GlobalState { get { return this.globalState; } set { globalState = value; } }
 }
