@@ -68,6 +68,10 @@ public class Graph<T> {
         return true;
     }
 
+    public IEnumerable<Vertex<T>> Neighbors(Vertex<T> vertex) {
+        return vertex.Neighbors();
+    }
+
     public void Clear() {
         _adjacencyList.Clear();
     }
