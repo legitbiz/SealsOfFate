@@ -1,9 +1,20 @@
 ﻿using System.Collections.Generic;
 
 /// <summary>
-/// A very low-level, generic Graph data structure. This class is intended to
-/// be extended and built upon, not used on its own for any real heavy lifting.
+/// A very low-level, generic Graph data structure. It provides 
+/// convenient access to the Vertices by exposing an enumerable
+/// Adjacency List.
 /// </summary>
+/// <remarks>
+/// This class is intended to be extended and built upon, not used 
+/// on its own for any real heavy lifting. Due to its generic nature,
+/// it is assumed that whoever is extending this class will provide
+/// logic for distinguishing Vertices from one another for the purposes
+/// of methods like AddEdge, etc. This class does not presume to perform
+/// such operations nor does it assume the data supports it. This is the
+/// responsibility of the client code. That is exactly why some of the 
+/// methods take in generic Vertex as parameters.
+/// </remarks>
 public class Graph<T> {
     private readonly List<Vertex<T>> _adjacencyList;
     /// <summary>Exposes the Adjacency List for algorithmic convenience.</summary>
@@ -34,15 +45,19 @@ public class Graph<T> {
     /// The edge is inserted from Source -> Destination. Remember, this is an
     /// unweighted Graph, and this method only inserts an edge in one direction.
     /// </remarks>
-    public bool AddEdge(T source, T destination) {
+    /// <returns>
+    /// True if an edge was established, False if one or more arguments
+    /// could not be resolved to valid vertices.
+    /// </returns>
+    public bool AddEdge(Vertex<T> source, Vertex<T> destination) {
         if (source == null || destination == null) {
             return false;
         }
-        foreach (var vertex in _adjacencyList) {
-            if (vertex.Equals(source)) {
-                //vertex.
-            }
-        }
+
+        // TODO: This is a horrible method in its current state.
+
+        source.AddEdge(destination);
+
         return true;
     }
 
@@ -58,8 +73,21 @@ public class Graph<T> {
             Data = initialValue;    
         }
 
+        /// <summary>Adds an Edge from this Vertex to the provided Vertex.</summary>
+        /// <param name="destination">The Vertex being made adjacent to this one.</param>
         public void AddEdge(Vertex<T> destination) {
             _edgeList.Add(new Edge(destination));
+        }
+
+        /// <summary>Provides an enumerable collection of Vertices adjacent to this one.</summary>
+        /// <returns>An IEnumerable of adjacent Vertices.</returns>
+        public IEnumerable<Vertex<T>> Neighbors() {
+            var neighborList = new List<Vertex<T>>();
+            foreach (var edge in _edgeList) {
+                neighborList.Add(edge.AdjacentTo);
+            }
+
+            return neighborList;
         }
     }
 
