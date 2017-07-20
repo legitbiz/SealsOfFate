@@ -4,7 +4,7 @@
 /// A very low-level, generic Graph data structure. This class is intended to
 /// be extended and built upon, not used on its own for any real heavy lifting.
 /// </summary>
-public class Graph<T> where T : System.IEquatable<T> {
+public class Graph<T> {
     private readonly List<Vertex<T>> _adjacencyList;
     /// <summary>Exposes the Adjacency List for algorithmic convenience.</summary>
     public IEnumerable<Vertex<T>> AdjacencyList { get { return _adjacencyList; } }
