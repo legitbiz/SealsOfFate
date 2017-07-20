@@ -68,6 +68,14 @@ public class Graph<T> {
         return true;
     }
 
+    /// <summary>Removes the edge from one vertex to another.</summary>
+    /// <param name="removeFrom">The Vertex to remove the edge from.</param>
+    /// <param name="toRemove">The Vertex that will no longer be adjacent to removeFrom.</param>
+    /// <remarks>removeFrom's edge will be removed from toRemove.</remarks>
+    public bool RemoveEdge(Vertex<T> removeFrom, Vertex<T> toRemove) {
+        return removeFrom.RemoveEdge(toRemove);
+    }
+
     /// <summary>
     /// Provides an IEnumerable to iterate over all adjacent 
     /// vertices to the specified vertex.
