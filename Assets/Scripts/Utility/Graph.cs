@@ -43,6 +43,10 @@ public class Graph<T> {
     /// <summary>Removes the specified Vertex from the Graph.</summary>
     /// <param name="toRemove">A reference to the Vertex to be removed.</param>
     public bool RemoveVertex(Vertex<T> toRemove) {
+        foreach (var vertex in _adjacencyList) {
+            vertex.RemoveEdge(toRemove);
+        }
+
         return _adjacencyList.Remove(toRemove);
     }
 
