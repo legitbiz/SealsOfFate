@@ -63,11 +63,13 @@ public class Graph<T> {
             return false;
         }
 
-        // TODO: This is a horrible method in its current state.
-
         source.AddEdge(destination);
 
         return true;
+    }
+
+    public void Clear() {
+        _adjacencyList.Clear();
     }
 
     /// <summary>Represents a Vertex node in a Graph.</summary>
@@ -90,12 +92,17 @@ public class Graph<T> {
             _edgeList.Add(new Edge(destination));
         }
 
+        /// <summary>Remove all edges from this Vertex to the specified Vertex.</summary>
+        /// <param name="detachFrom">The Vertex to sever ties from.</param>
         public bool RemoveEdge(Vertex<T> detachFrom) {
             if (detachFrom == null) {
                 return false;
             }
 
-            foreach (var edge in _edgeList) {
+            // Iterate over an Array of the collection to avoid modifying the collection
+            // during enumeration. This we way enumerate the array, and then can modify
+            // the collection as needed.
+            foreach (var edge in _edgeList.ToArray()) {
                 if (edge.AdjacentTo == detachFrom) {
                     _edgeList.Remove(edge);
                 }
