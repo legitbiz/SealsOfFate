@@ -49,6 +49,7 @@ public class Graph<T> {
         /// <summary>The list of adjacent Vertices.</summary>
         private readonly List<Edge> edgeList = new List<Edge>();
 
+        /// <summary>Constructs the Vertex with the initial value.</summary>
         public Vertex(V initialValue) {
             Data = initialValue;    
         }
