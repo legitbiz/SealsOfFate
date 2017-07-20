@@ -18,17 +18,22 @@ public class Graph<T> {
         adjacencyList.Add(new Vertex<T>(toAdd));
     }
 
+    public bool AddEdge(T source, T destination) {
+        if (source == null || destination == null) {
+            return false;
+        }
+    }
+
     private class Vertex<T> {
+        public T Data { public get; private set; }
+        private List<Edge> edgeList = new List<Edge>();
+
         public Vertex(T initialValue) {
             Data = initialValue;    
         }
-
-        public T Data { public get; private set; }
-
-        private List<Edge> edgeList = new List<Edge>();
     }
 
     private class Edge {
-         public int AdjacentTo { get; set; }
+         public T AdjacentTo { get; set; }
     }
 }
