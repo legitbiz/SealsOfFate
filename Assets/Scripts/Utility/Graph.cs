@@ -64,6 +64,7 @@ public class Graph<T> {
     public class Vertex<V> {
         /// <summary>The data held by the Vertex.</summary>
         public V Data { get; private set; }
+        /// <summary>The number of adjacent vertices to this one.</summary>
         public int CountAdjacent { get { return _edgeList.Count; } }
         /// <summary>The list of adjacent Vertices.</summary>
         private readonly List<Edge> _edgeList = new List<Edge>();
