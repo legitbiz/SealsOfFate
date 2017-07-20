@@ -40,6 +40,12 @@ public class Graph<T> {
         _adjacencyList.Add(new Vertex<T>(toAdd));
     }
 
+    /// <summary>Removes the specified Vertex from the Graph.</summary>
+    /// <param name="toRemove">A reference to the Vertex to be removed.</param>
+    public bool RemoveVertex(Vertex<T> toRemove) {
+        return _adjacencyList.Remove(toRemove);
+    }
+
     /// <summary>Adds an edge between the specified vertices.</summary>
     /// <param name="source">The source vertex.</param>
     /// <param name="destination">The destination vertex.</param>
@@ -78,6 +84,20 @@ public class Graph<T> {
         /// <param name="destination">The Vertex being made adjacent to this one.</param>
         public void AddEdge(Vertex<T> destination) {
             _edgeList.Add(new Edge(destination));
+        }
+
+        public bool RemoveEdge(Vertex<T> detachFrom) {
+            if (detachFrom == null) {
+                return false;
+            }
+
+            foreach (var edge in _edgeList) {
+                if (edge.AdjacentTo == detachFrom) {
+                    _edgeList.Remove(edge);
+                }
+            }
+
+            return true;
         }
 
         /// <summary>Provides an enumerable collection of Vertices adjacent to this one.</summary>
