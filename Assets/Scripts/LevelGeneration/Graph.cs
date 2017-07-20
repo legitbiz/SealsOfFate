@@ -2,7 +2,7 @@
 
 public class Graph<T> {
     private readonly List<Vertex<T>> _adjacencyList;
-    public IEnumerable<Vertex<T>> AdjacencyList { public get { return _adjacencyList; } }
+    public IEnumerable<Vertex<T>> AdjacencyList { get { return _adjacencyList; } }
 
     public Graph() {
         _adjacencyList = new List<Vertex<T>>();
@@ -22,18 +22,20 @@ public class Graph<T> {
         if (source == null || destination == null) {
             return false;
         }
+
+        return true;
     }
 
-    private class Vertex<T> {
-        public T Data { public get; private set; }
-        private List<Edge> edgeList = new List<Edge>();
+    public class Vertex<V> {
+        public V Data { get; private set; }
+        private readonly List<Edge> edgeList = new List<Edge>();
 
-        public Vertex(T initialValue) {
+        public Vertex(V initialValue) {
             Data = initialValue;    
         }
     }
 
-    private class Edge {
+    public class Edge {
          public T AdjacentTo { get; set; }
     }
 }
