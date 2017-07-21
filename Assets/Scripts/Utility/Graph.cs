@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// A very low-level, generic Graph data structure. It provides 
@@ -16,33 +17,31 @@
 /// methods take in generic Vertex as parameters.
 /// </remarks>
 public class Graph<T> {
-    private readonly List<Vertex<T>> _adjacencyList;
+    private readonly List<Vertex> _adjacencyList;
     /// <summary>Exposes the Adjacency List for algorithmic convenience.</summary>
-    public IEnumerable<Vertex<T>> AdjacencyList { get { return _adjacencyList; } }
+    public IEnumerable<Vertex> AdjacencyList { get { return _adjacencyList; } }
     /// <summary>The number of Vertices in the Graph.</summary>
     public int Count { get { return _adjacencyList.Count ; } }
 
-    public Graph() {
-        _adjacencyList = new List<Vertex<T>>();
-    }
-
     /// <summary>Creates the Graph with the specified number of vertices.</summary>
-    /// <param>The number of Vertices to allocate for the Graph.</param>
-    public Graph(int initialSize) {
+    /// <param name="initialSize">
+    /// The number of Vertices to allocate for the Graph.
+    /// </param>
+    public Graph(int initialSize = 12) {
         if (initialSize > 0) {
-            _adjacencyList = new List<Vertex<T>>(initialSize);
+            _adjacencyList = new List<Vertex>(initialSize);
         }
     }
 
     /// <summary>Adds a Vertex into the Graph.</summary>
     /// <param>Generic type to add to the Graph.</summary>
     public void AddVertex(T toAdd) {
-        _adjacencyList.Add(new Vertex<T>(toAdd));
+        _adjacencyList.Add(new Vertex(toAdd));
     }
 
     /// <summary>Removes the specified Vertex from the Graph.</summary>
     /// <param name="toRemove">A reference to the Vertex to be removed.</param>
-    public bool RemoveVertex(Vertex<T> toRemove) {
+    public bool RemoveVertex(Vertex toRemove) {
         foreach (var vertex in _adjacencyList) {
             vertex.RemoveEdge(toRemove);
         }
@@ -58,7 +57,7 @@ public class Graph<T> {
     /// True if an edge was established, False if one or more arguments
     /// could not be resolved to valid vertices.
     /// </returns>
-    public bool AddEdge(Vertex<T> source, Vertex<T> destination) {
+    public bool AddEdge(Vertex source, Vertex destination) {
         if (source == null || destination == null) {
             return false;
         }
@@ -72,7 +71,7 @@ public class Graph<T> {
     /// <param name="removeFrom">The Vertex to remove the edge from.</param>
     /// <param name="toRemove">The Vertex that will no longer be adjacent to removeFrom.</param>
     /// <remarks>removeFrom's edge will be removed from toRemove.</remarks>
-    public bool RemoveEdge(Vertex<T> removeFrom, Vertex<T> toRemove) {
+    public bool RemoveEdge(Vertex removeFrom, Vertex toRemove) {
         return removeFrom.RemoveEdge(toRemove);
     }
 
@@ -81,7 +80,7 @@ public class Graph<T> {
     /// vertices to the specified vertex.
     /// </summary>
     /// <param name="vertex">The Vertex whose neighbors to iterate over.</param>
-    public IEnumerable<Vertex<T>> Neighbors(Vertex<T> vertex) {
+    public IEnumerable<Vertex> Neighbors(Vertex vertex) {
         return vertex.Neighbors();
     }
 
@@ -93,63 +92,53 @@ public class Graph<T> {
     }
 
     /// <summary>Represents a Vertex node in a Graph.</summary>
-    public class Vertex<V> {
+    public class Vertex {
         /// <summary>The data held by the Vertex.</summary>
-        public V Data { get; private set; }
+        public T Data { get; private set; }
         /// <summary>The number of adjacent vertices to this one.</summary>
         public int CountAdjacent { get { return _edgeList.Count; } }
         /// <summary>The list of adjacent Vertices.</summary>
         private readonly List<Edge> _edgeList = new List<Edge>();
 
         /// <summary>Constructs the Vertex with the initial value.</summary>
-        public Vertex(V initialValue) {
+        public Vertex(T initialValue) {
             Data = initialValue;    
         }
 
         /// <summary>Adds an Edge from this Vertex to the provided Vertex.</summary>
         /// <param name="destination">The Vertex being made adjacent to this one.</param>
-        public void AddEdge(Vertex<T> destination) {
-            _edgeList.Add(new Edge(destination));
+        public void AddEdge(Vertex destination) {
+            _edgeList.Add(new Edge(this, destination));
         }
 
         /// <summary>Remove all edges from this Vertex to the specified Vertex.</summary>
         /// <param name="detachFrom">The Vertex to sever ties from.</param>
-        public bool RemoveEdge(Vertex<T> detachFrom) {
+        /// <returns>Returns true if items were removed, false if 0 items were removed.</returns>
+        public bool RemoveEdge(Vertex detachFrom) {
             if (detachFrom == null) {
                 return false;
             }
 
-            // Iterate over an Array of the collection to avoid modifying the collection
-            // during enumeration. This we way enumerate the array, and then can modify
-            // the collection as needed.
-            foreach (var edge in _edgeList.ToArray()) {
-                if (edge.AdjacentTo == detachFrom) {
-                    _edgeList.Remove(edge);
-                }
-            }
-
-            return true;
+            // RemoveAll returns # removed, if it's not zero, success.
+            return (_edgeList.RemoveAll(e => e.To == detachFrom) != 0);
         }
 
         /// <summary>Provides an enumerable collection of Vertices adjacent to this one.</summary>
         /// <returns>An IEnumerable of adjacent Vertices.</returns>
-        public IEnumerable<Vertex<T>> Neighbors() {
-            var neighborList = new List<Vertex<T>>();
-            foreach (var edge in _edgeList) {
-                neighborList.Add(edge.AdjacentTo);
-            }
-
-            return neighborList;
+        public IEnumerable<Vertex> Neighbors() {
+            return _edgeList.Select(edge => edge.To).ToList();
         }
     }
 
     /// <summary>Represents an Edge between two Vertices.</summary>
     public class Edge {
         /// <summary>A reference to the Vertex that this edge leads to.</summary>
-         public Vertex<T> AdjacentTo { get; set; }
+         public Vertex To { get; set; }
+         public Vertex From { get; set; }
 
-         public Edge(Vertex<T> adjacentTo) {
-             AdjacentTo = adjacentTo;
+         public Edge(Vertex adjacentFrom, Vertex adjacentTo) {
+             To = adjacentTo;
+             From = adjacentFrom;
          }
     }
 }
