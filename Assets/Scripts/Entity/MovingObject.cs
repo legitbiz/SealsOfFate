@@ -59,11 +59,8 @@ public abstract class MovingObject : MonoBehaviour
             //Return true to say that Move was successful
             return true;
         }
-<<<<<<< HEAD:Assets/Scripts/Entity/MovingObject.cs
-=======
 
         // If something was hit, return false, Move was unsuccesful.
->>>>>>> jp38-better-comments:Assets/Scripts/MovingObject.cs
         return false;
     }
 
@@ -84,13 +81,13 @@ public abstract class MovingObject : MonoBehaviour
         Vector2 end = start + new Vector2(xDir, yDir);
 
         //Disable the boxCollider so that linecast doesn't hit this object's own collider.
-        boxCollider.enabled = false;
+        _boxCollider.enabled = false;
 
         //Cast a line from start point to end point checking collision on blockingLayer.
-        hit = Physics2D.Linecast(start, end, blockingLayer);
+        hit = Physics2D.Linecast(start, end, BlockingLayer);
 
         //Re-enable boxCollider after linecast
-        boxCollider.enabled = true;
+        _boxCollider.enabled = true;
 
         //Check if anything was hit
         if (hit.transform == null)
@@ -102,17 +99,12 @@ public abstract class MovingObject : MonoBehaviour
     }
 
 
-<<<<<<< HEAD:Assets/Scripts/Entity/MovingObject.cs
-        //Co-routine for moving units from one space to next, takes a parameter end to specify where to move to.
-        protected IEnumerator SmoothMovement(Vector3 end)
-=======
     /// <summary>
     /// Co-routine for moving units from one space to next.
     /// </summary>
     /// <param name="end">The end point of movement</param>
     /// <returns></returns>
     protected IEnumerator SmoothMovement(Vector3 end)
->>>>>>> jp38-better-comments:Assets/Scripts/MovingObject.cs
     {
         // Calculate the remaining distance to move based on the square magnitude of the difference between current position and end parameter. 
         // Square magnitude is used instead of magnitude because it's computationally cheaper.
