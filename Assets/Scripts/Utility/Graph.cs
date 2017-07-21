@@ -26,7 +26,15 @@ public class Graph<T> {
     /// <summary>Creates the Graph with the specified number of vertices.</summary>
     /// <param name="initialSize">
     /// The number of Vertices to allocate for the Graph.
+    /// The default number of Vertices to create is set to 12 to
+    /// accommodate a reasonably sized graph.
     /// </param>
+    /// <remarks>
+    /// You are doing yourself a disservice if you don't take it upon
+    /// yourself to pass in a reasonable initial value for the Graph
+    /// based on your expected dataset. Not doing so and then using
+    /// a huge dataset will mar your soul with the most grievous of performance sins.
+    /// </remarks>
     public Graph(int initialSize = 12) {
         if (initialSize > 0) {
             _adjacencyList = new List<Vertex>(initialSize);
