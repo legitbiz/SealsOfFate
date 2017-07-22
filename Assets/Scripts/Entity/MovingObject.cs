@@ -12,7 +12,7 @@ public abstract class MovingObject : MonoBehaviour
     private Rigidbody2D _rb2D; //The Rigidbody2D component attached to this object.
     public LayerMask BlockingLayer; //Layer on which collision will be checked.
     protected bool IsMoving;
-    public float MoveTime = 0.1f; //Time it will take object to move, in seconds.
+    public float MoveTime = 0.075f; //Time it will take object to move, in seconds.
 
     protected virtual void Start()
     {
