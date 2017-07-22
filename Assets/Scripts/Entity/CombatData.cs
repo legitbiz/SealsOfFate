@@ -15,7 +15,7 @@ namespace Assets.Scripts.Entity {
         private readonly List<DefenseTag> _defenseTags = new List<DefenseTag>();
 
         /// <summary>
-        ///     Used when the Player is attacking an Enemy
+        /// Create CombatData from a player
         /// </summary>
         /// <param name="p">The player</param>
         public CombatData(Player p) {
@@ -26,7 +26,7 @@ namespace Assets.Scripts.Entity {
         }
 
         /// <summary>
-        ///     Used when an Enemy attacks the Player
+        /// Create CombatData from an enemy
         /// </summary>
         /// <param name="e">An enemy</param>
         public CombatData(Enemy e) {
