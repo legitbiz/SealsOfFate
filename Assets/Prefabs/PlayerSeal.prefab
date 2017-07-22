@@ -117,14 +117,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf7fa84b1cbb7ab459b05ce1a72ef24c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveTime: 0.1
-  blockingLayer:
+  BlockingLayer:
     serializedVersion: 2
     m_Bits: 512
-  restartLevelDelay: 1
-  pointsPerFood: 10
-  pointsPerSoda: 20
-  wallDamage: 1
+  MoveTime: 0.1
+  PointsPerFood: 10
+  PointsPerSoda: 20
+  RestartLevelDelay: 1
+  WallDamage: 1
 --- !u!212 &212665703806811212
 SpriteRenderer:
   m_ObjectHideFlags: 1
