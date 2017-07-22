@@ -1,4 +1,6 @@
-﻿namespace Assets.Scripts.Entity
+﻿using System.Collections.Generic;
+
+namespace Assets.Scripts.Entity
 {
     public enum DamageType
     {
