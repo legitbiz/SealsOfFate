@@ -14,7 +14,7 @@ namespace Assets.Scripts.Entity
     {
         public override void Apply(ref CombatData attack)
         {
-            attack.Damage = 0;
+            attack.AttackInfo.Damage = 0;
         }
     }
 }
