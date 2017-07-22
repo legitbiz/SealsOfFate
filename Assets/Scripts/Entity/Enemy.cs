@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions.Comparers;
 
 /// <summary>
 /// This class is the general enemy class. It extends MovingObject and is expected to be extended by more specific
@@ -61,7 +62,7 @@ public class Enemy : MovingObject
         //***Decompose to pure horizontal and vertical***
         //Travel in the direction of whichever component is larger. In case of a tie, do a coin flip.
         float coinFlip;
-        if (Math.Abs(playerDir.x) == Math.Abs(playerDir.y)) {
+        if (Math.Abs(Math.Abs(playerDir.x) - Math.Abs(playerDir.y)) < FloatComparer.kEpsilon) {
             coinFlip = UnityEngine.Random.value;
             if (coinFlip >=0.51) //Random.value returns a number between 0.0 and 1.0 inclusively
             {
