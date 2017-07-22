@@ -1,19 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Assets.Scripts.Entity
-{
-    internal abstract class AttackTag
-    {
+﻿namespace Assets.Scripts.Entity {
+    /// <summary>
+    /// Attack tag descriptor
+    /// </summary>
+    internal abstract class AttackTag {
+        /// <summary>
+        /// Applies the attack tag to a defender's combat data
+        /// </summary>
+        /// <param name="cd">The defender's combat data</param>
         public abstract void Apply(ref CombatData cd);
     }
-    
-    internal class UnblockableAttack : AttackTag
-    {
-        public override void Apply(ref CombatData cd)
-        {
+
+    /// <summary>
+    /// An attack that ignores armor
+    /// </summary>
+    internal class IgnoresArmorAttackTag : AttackTag {
+        /// <summary>
+        /// Set the defender's armor to 0.
+        /// </summary>
+        /// <param name="cd">The defender's combat data</param>
+        public override void Apply(ref CombatData cd) {
             cd.Armor = 0;
         }
     }

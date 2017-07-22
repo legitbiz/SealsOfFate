@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using JetBrains.Annotations;
-
-namespace Assets.Scripts.Entity
-{
-    interface IAttackable
-    {
+﻿namespace Assets.Scripts.Entity {
+    /// <summary>
+    /// An attackable thing!
+    /// </summary>
+    internal interface IAttackable {
+        /// <summary>
+        /// Convert this thing to a CombatDataa
+        /// </summary>
+        /// <returns>A CombatData representing a thing</returns>
         CombatData ToCombatData();
     }
-
-    
 }

@@ -1,26 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿namespace Assets.Scripts.Entity {
+    /// <summary>
+    ///     Information about defense
+    /// </summary>
+    public class DefenseInfo {
+        private byte _damageMitigation;
 
-namespace Assets.Scripts.Entity
-{
-    public class DefenseInfo
-    {
         /// <summary>
-        /// The type of damage blocked
+        ///     Creates a new defense information object that describes the type of damage mitigated and what percentage is
+        ///     mitigated
+        /// </summary>
+        /// <param name="damageType">The type of damage being mitigated</param>
+        /// <param name="damageMitigation">A value from 0 to 100. Values over 100 are forced to 100.</param>
+        public DefenseInfo(DamageType damageType, byte damageMitigation) {
+            DamageType = damageType;
+
+            DamageMitigation = (byte) (damageMitigation > 100 ? 100 : damageMitigation);
+        }
+
+        /// <summary>
+        ///     The type of damage mitigated
         /// </summary>
         public DamageType DamageType { get; set; }
 
         /// <summary>
-        /// The amount of damage mitigated
+        ///     The percentage (0 to 100) of damage mitigated
         /// </summary>
-        public int DamageMitigation { get; set; }
-
-        public DefenseInfo(DamageType damageType, int damageMitigation)
-        {
-            DamageType = damageType;
-            DamageMitigation = damageMitigation;
+        public byte DamageMitigation {
+            get { return _damageMitigation; }
+            private set {
+                _damageMitigation = (byte)(value > 100 ? 100 : value);
+            }
         }
     }
 }
