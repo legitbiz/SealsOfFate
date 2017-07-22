@@ -26,12 +26,12 @@ public class Enemy : MovingObject, IAttackable
     public AttackInfo Weapon = new AttackInfo(5, DamageType.Blunt, "A hard truth, told cruelly");
 
     /// <summary> The state machine that handles state transitions. </summary>
-    private StateMachine<Enemy> stateMachine;
+    private StateMachine<Enemy> _stateMachine;
 
     Enemy() : base()
     {
-        stateMachine = new StateMachine<Enemy>(this);
-        stateMachine.CurrentState = StateAlert.getInstance();
+        _stateMachine = new StateMachine<Enemy>(this);
+        _stateMachine.CurrentState = StateAlert.getInstance();
     }
 
     /// <summary>
@@ -46,9 +46,12 @@ public class Enemy : MovingObject, IAttackable
     /// Returns the state machine instance
     /// </summary>
     /// <returns></returns>
-    public StateMachine<Enemy> getStateMachine()
+    public StateMachine<Enemy> StateMachine
     {
-        return stateMachine;
+        get
+        {
+            return _stateMachine;
+        }
     }
 
     /// <summary>

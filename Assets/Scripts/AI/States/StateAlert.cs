@@ -16,7 +16,7 @@ public class StateAlert : State<Enemy>
     private static StateAlert instance = null;
     public override void Enter(Enemy owner)
     {
-        owner.getStateMachine().ChangeState(StateSeekPlayer.getInstance());
+        owner.StateMachine.ChangeState(StateSeekPlayer.getInstance());
     }
 
     public override void Execute(Enemy owner)

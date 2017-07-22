@@ -68,7 +68,7 @@ public class GameManager : MonoBehaviour
                             //Cast to an enemy, and update it's state machine
                             //Candidate for refactoring to avoid the cast
                             Enemy enemy = (Enemy)entitiesToMove[enemyTurn];
-                            enemy.getStateMachine().Update();
+                            enemy.StateMachine.Update();
                             
                         }
                         //Increment to the next enemy
