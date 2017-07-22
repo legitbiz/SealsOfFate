@@ -1,11 +1,12 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Entity;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
 ///     This class contains logic for processing player input and interacting with other relevant
 ///     GameObjects in the generated scene.
 /// </summary>
-public class Player : MovingObject
+public class Player : MovingObject, IAttackable
 {
     /// <summary>Stores a reference to the Player's animator component.</summary>
     private Animator _animator;
@@ -24,6 +25,11 @@ public class Player : MovingObject
 
     /// <summary>How much damage the Player inflicts to the Wall object when it attacks.</summary>
     public int WallDamage = 1;
+
+    /// <summary>
+    /// The primary weapon of the seal: a vicious nose boop
+    /// </summary>
+    public AttackInfo Weapon = new AttackInfo(10, DamageType.Blunt, "Vicious nose boop");
 
     /// <summary>
     ///     Configures the Player state on entry to the scene.
@@ -201,5 +207,10 @@ public class Player : MovingObject
         {
             GameManager.instance.GameOver();
         }
+    }
+
+    public CombatData ToCombatData()
+    {
+        throw new System.NotImplementedException();
     }
 }
