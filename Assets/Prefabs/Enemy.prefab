@@ -120,7 +120,7 @@ MonoBehaviour:
   BlockingLayer:
     serializedVersion: 2
     m_Bits: 512
-  MoveTime: 0.05
+  MoveTime: 0.075
   speed: 1
   min_range: 0
   max_range: 1
