@@ -168,6 +168,5 @@ public abstract class MovingObject : MonoBehaviour
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="component"></param>
-    protected abstract void OnCantMove<T>(T component)
-        where T : Component;
+    protected abstract void OnCantMove<T>(T component) where T : Component;
 }

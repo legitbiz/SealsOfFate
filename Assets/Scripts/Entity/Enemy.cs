@@ -100,12 +100,14 @@ public class Enemy : MovingObject
         }
 
         //move in the direction given
-        AttemptMove<Player>(horizontal,vertical);
+        AttemptMove<Component>(horizontal,vertical);
     }
     protected override void OnCantMove<T>(T component)
     {
+        if (component.tag == "Player") {
+            Debug.Log("Penguin attacks player");
+        }
         return;
-        //throw new NotImplementedException();
     }
 
 }
