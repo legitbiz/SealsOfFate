@@ -3,6 +3,7 @@
     ///     Information about defense
     /// </summary>
     public class DefenseInfo {
+        private const int MaxDamageMitigation = 100;
         private byte _damageMitigation;
 
         /// <summary>
@@ -14,7 +15,7 @@
         public DefenseInfo(DamageType damageType, byte damageMitigation) {
             DamageType = damageType;
 
-            DamageMitigation = (byte) (damageMitigation > 100 ? 100 : damageMitigation);
+            DamageMitigation = damageMitigation;
         }
 
         /// <summary>
@@ -27,9 +28,7 @@
         /// </summary>
         public byte DamageMitigation {
             get { return _damageMitigation; }
-            private set {
-                _damageMitigation = (byte)(value > 100 ? 100 : value);
-            }
+            private set { _damageMitigation = (byte) (value > MaxDamageMitigation ? MaxDamageMitigation : value); }
         }
     }
 }

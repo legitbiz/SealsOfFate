@@ -15,7 +15,7 @@ namespace Assets.Scripts.Entity {
         private readonly List<DefenseTag> _defenseTags = new List<DefenseTag>();
 
         /// <summary>
-        /// Create CombatData from a player
+        ///     Create CombatData from a player
         /// </summary>
         /// <param name="p">The player</param>
         public CombatData(Player p) {
@@ -26,7 +26,7 @@ namespace Assets.Scripts.Entity {
         }
 
         /// <summary>
-        /// Create CombatData from an enemy
+        ///     Create CombatData from an enemy
         /// </summary>
         /// <param name="e">An enemy</param>
         public CombatData(Enemy e) {
@@ -37,32 +37,32 @@ namespace Assets.Scripts.Entity {
         }
 
         /// <summary>
-        /// The health of this object
+        ///     The health of this object
         /// </summary>
         public int Health { get; set; }
 
         /// <summary>
-        /// Mana from combat
+        ///     Mana from combat
         /// </summary>
         public int Mana { get; set; }
 
         /// <summary>
-        /// Someone's armor
+        ///     Someone's armor
         /// </summary>
         public int Armor { get; set; }
 
         /// <summary>
-        ///  The attack info
+        ///     The attack info
         /// </summary>
         public AttackInfo AttackInfo { get; set; }
 
         /// <summary>
-        /// The defense info
+        ///     The defense info
         /// </summary>
         public DefenseInfo DefenseInfo { get; set; }
 
         /// <summary>
-        /// Is this combatant blocking?
+        ///     Is this combatant blocking?
         /// </summary>
         public bool Blocking { get; set; }
 
@@ -85,7 +85,9 @@ namespace Assets.Scripts.Entity {
                 .Aggregate(attacker.AttackInfo.Damage, (current, effect) => current - effect.DamageMitigation);
 
             // return the calcuated damage
-            return damage - defender.Armor;
+            damage -= defender.Armor;
+
+            return damage <= 0 ? 1 : damage;
         }
     }
 }
