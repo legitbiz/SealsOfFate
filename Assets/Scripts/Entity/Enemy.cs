@@ -18,7 +18,7 @@ public class Enemy : MovingObject, IAttackable
     /// <summary> The maximum attack range for an enemy. Enemies will try to stay below this range </summary>
     public int max_range;
     /// <summary>The enemy's health points</summary>
-    public int Health { get; set; }
+    public ushort Health { get; set; }
 
     /// <summary>
     /// The primary weapon of all enemies is the truth

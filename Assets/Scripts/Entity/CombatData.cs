@@ -19,7 +19,7 @@ namespace Assets.Scripts.Entity {
         /// </summary>
         /// <param name="p">The player</param>
         public CombatData(Player p) {
-            Health = GameManager.instance.playerHealth;
+            HealthPoints = (ushort) GameManager.instance.playerHealth;
             // copy in defense effects
             // copy in attack effects
             // copy in attack tags
@@ -30,7 +30,7 @@ namespace Assets.Scripts.Entity {
         /// </summary>
         /// <param name="e">An enemy</param>
         public CombatData(Enemy e) {
-            Health = e.Health;
+            HealthPoints = e.Health;
             // copy in defense effects
             // copy in attack effects
             // copy in attack tags
@@ -39,17 +39,22 @@ namespace Assets.Scripts.Entity {
         /// <summary>
         ///     The health of this object
         /// </summary>
-        public int Health { get; set; }
+        public ushort HealthPoints { get; set; }
 
         /// <summary>
         ///     Mana from combat
         /// </summary>
-        public int Mana { get; set; }
+        public ushort ManaPoints { get; set; }
 
         /// <summary>
         ///     Someone's armor
         /// </summary>
-        public int Armor { get; set; }
+        public byte DamageReduction { get; set; }
+
+        /// <summary>
+        ///     Percent chance of evading an attack
+        /// </summary>
+        public ushort Evasion { get; set; }
 
         /// <summary>
         ///     The attack info

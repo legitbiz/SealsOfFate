@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Entity;
+﻿using System;
+using Assets.Scripts.Entity;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -6,13 +7,35 @@ using UnityEngine.SceneManagement;
 ///     This class contains logic for processing player input and interacting with other relevant
 ///     GameObjects in the generated scene.
 /// </summary>
-public class Player : MovingObject, IAttackable
-{
+public class Player : MovingObject, IAttackable {
     /// <summary>Stores a reference to the Player's animator component.</summary>
     private Animator _animator;
 
+    /// <summary>Stores the Player's Damage Reduction (percent value).</summary>
+    private byte _damageReduction;
+
+    /// <summary>Stores the Player's evasion (percent value).</summary>
+    private byte _evasion;
+
     /// <summary>Stores the Player's current food points during the level.</summary>
     private int _food;
+
+    //// Stat Block 
+    /// TODO: Connect this stat block to their appropriate functionality.
+    /// <summary>Stores the Player's Health.</summary>
+    private ushort _healthPoints;
+
+    /// <summary>Stores the Player's Mana.</summary>
+    private ushort _manaPoints;
+
+    /// <summary>Stores the Player's Movement Speed.</summary>
+    private ushort _movementSpeed;
+
+    /// <summary>Stores the Player's Physical Damage stat.</summary>
+    private AttackInfo _sealie = new AttackInfo(10, DamageType.Blunt, "Vicious nose boop");
+
+    /// <summary>Stores the Player's Magic Damage stat.</summary>
+    private AttackInfo _unsealie = null;
 
     /// <summary>Number of points to add to player food resource when picking up a food object.</summary>
     public int PointsPerFood = 10;
@@ -26,35 +49,13 @@ public class Player : MovingObject, IAttackable
     /// <summary>How much damage the Player inflicts to the Wall object when it attacks.</summary>
     public int WallDamage = 1;
 
-    //// Stat Block 
-    /// TODO: Connect this stat block to their appropriate functionality.
-    /// <summary>Stores the Player's Health.</summary>
-    private ushort _healthPoints;
-    
-    /// <summary>Stores the Player's Mana.</summary>
-    private ushort _manaPoints;
-    
-    /// <summary>Stores the Player's Damage Reduction (percent value).</summary>
-    private byte _damageReduction;
-    
-    /// <summary>Stores the Player's Movement Speed.</summary>
-    private ushort _movementSpeed;
-    
-    /// <summary>Stores the Player's evasion (percent value).</summary>
-    private byte _evasion;
-    
-    /// <summary>Stores the Player's Physical Damage stat.</summary>
-    private ushort _sealie;
-    
-    /// <summary>Stores the Player's Magic Damage stat.</summary>
-    private ushort _unsealie;
-
-
-
     /// <summary>
-    /// The primary weapon of the seal: a vicious nose boop
+    ///     Creates a CombatData object from the player
     /// </summary>
-    public AttackInfo Weapon = new AttackInfo(10, DamageType.Blunt, "Vicious nose boop");
+    /// <returns>A CombatData representing the player</returns>
+    public CombatData ToCombatData() {
+        throw new NotImplementedException();
+    }
 
     /// <summary>
     ///     Configures the Player state on entry to the scene.
@@ -220,10 +221,5 @@ public class Player : MovingObject, IAttackable
         if (_food <= 0) {
             GameManager.instance.GameOver();
         }
-    }
-
-    public CombatData ToCombatData()
-    {
-        throw new System.NotImplementedException();
     }
 }
