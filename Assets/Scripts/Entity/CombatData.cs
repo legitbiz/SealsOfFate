@@ -87,7 +87,7 @@ namespace Assets.Scripts.Entity {
             // return the calcuated damage
             damage -= defender.Armor;
 
-            return damage <= 0 ? 1 : damage;
+            return damage < 0 ? 0 : damage;
         }
     }
 }
