@@ -34,8 +34,7 @@ public class Player : MovingObject, IAttackable
     /// <summary>
     ///     Configures the Player state on entry to the scene.
     /// </summary>
-    protected override void Start()
-    {
+    protected override void Start() {
         // Get a component reference to the Player's animator component
         _animator = GetComponent<Animator>();
 
@@ -51,8 +50,7 @@ public class Player : MovingObject, IAttackable
     ///     This is done to carry over the Player state from the current level to the next level.
     /// </summary>
     /// <remarks>Currently only stores the Player's food.</remarks>
-    private void OnDisable()
-    {
+    private void OnDisable() {
         GameManager.instance.playerHealth = _food;
     }
 
@@ -60,11 +58,9 @@ public class Player : MovingObject, IAttackable
     ///     If it's the Player's turn, this method handles updating the Player game logic
     ///     (such as translating player input into movement) on each engine tick.
     /// </summary>
-    private void Update()
-    {
+    private void Update() {
         //If it's not the player's turn, exit the function.
-        if (!GameManager.instance.playersTurn || GameManager.getInstance().IsMoving)
-        {
+        if (!GameManager.instance.playersTurn || GameManager.getInstance().IsMoving) {
             return;
         }
 
@@ -79,14 +75,12 @@ public class Player : MovingObject, IAttackable
         //       Diagonal/omnidirectional movement is restricted.
         // If horizontal movement detected, vertical is set to 0 to avoid movement
         // along vertical axis.
-        if (horizontal != 0)
-        {
+        if (horizontal != 0) {
             vertical = 0;
         }
 
-        if (horizontal != 0 || vertical != 0)
-        {
-            AttemptMove<Enemy>(horizontal, vertical);
+        if (horizontal != 0 || vertical != 0) {
+            AttemptMove<Component>(horizontal, vertical);
         }
     }
 
@@ -99,8 +93,7 @@ public class Player : MovingObject, IAttackable
     ///     An obstruction, such as an enemy or a wall, that could possibly
     ///     prohibit movement.
     /// </param>
-    protected override void AttemptMove<T>(int xDir, int yDir)
-    {
+    protected override void AttemptMove<T>(int xDir, int yDir) {
         // Every time player moves, subtract from food points total.
         _food--;
 
@@ -111,8 +104,7 @@ public class Player : MovingObject, IAttackable
         RaycastHit2D hit;
 
         // If Move returns true, meaning Player was able to move into an empty space.
-        if (Move(xDir, yDir, out hit))
-        {
+        if (Move(xDir, yDir, out hit)) {
             // Call RandomizeSfx of SoundManager to play the move sound, passing in two audio clips to choose from.
         }
 
@@ -129,8 +121,10 @@ public class Player : MovingObject, IAttackable
     ///     remove the obstruction.
     /// </summary>
     /// <param name="component">An interactable entity, such as a wall or an enemy.</param>
-    protected override void OnCantMove<T>(T component)
-    {
+    protected override void OnCantMove<T>(T component) {
+        if (component.tag == "Enemy") {
+            Debug.Log("Player attacks penguin");
+        }
     }
 
     /// <summary>
@@ -141,11 +135,9 @@ public class Player : MovingObject, IAttackable
     ///     A reference to the GameObject's collider that the
     ///     Player collided into.
     /// </param>
-    private void OnTriggerEnter2D(Collider2D other)
-    {
+    private void OnTriggerEnter2D(Collider2D other) {
         // Check if the tag of the trigger collided with is Exit.
-        switch (other.tag)
-        {
+        switch (other.tag) {
             case "Exit":
                 // Invoke the Restart function to start the next level with a delay of 
                 // restartLevelDelay (default 1 second).
@@ -175,8 +167,7 @@ public class Player : MovingObject, IAttackable
     /// <summary>
     ///     Reloads the scene.
     /// </summary>
-    private void Restart()
-    {
+    private void Restart() {
         // Load the last scene loaded, in this case Main, the only scene in the game.
         SceneManager.LoadScene(0);
     }
@@ -185,8 +176,7 @@ public class Player : MovingObject, IAttackable
     ///     Reduces the Player's food resource.
     /// </summary>
     /// <param name="loss">The amount of food to deduct from Player's food count.</param>
-    public void LoseFood(int loss)
-    {
+    public void LoseFood(int loss) {
         // Set the trigger for the player animator to transition to the playerHit animation.
         _animator.SetTrigger("playerHit");
 
@@ -200,11 +190,9 @@ public class Player : MovingObject, IAttackable
     /// <summary>
     ///     If a defeat condition has been reached (such as running out of food), end the game.
     /// </summary>
-    private void CheckIfGameOver()
-    {
+    private void CheckIfGameOver() {
         // Check if food point total is less than or equal to zero.
-        if (_food <= 0)
-        {
+        if (_food <= 0) {
             GameManager.instance.GameOver();
         }
     }
