@@ -1,4 +1,4 @@
-﻿namespace Assets.Scripts.Entity {
+﻿namespace Assets.Scripts.Combat {
     /// <summary>
     /// A tag describing defense
     /// </summary>
@@ -19,7 +19,7 @@
         /// </summary>
         /// <param name="attack">The attack to be negated by invicibility</param>
         public override void Apply(ref CombatData attack) {
-            attack.AttackInfo.Damage = 0;
+            attack.SealieAttack.Damage = 0;
         }
     }
 }

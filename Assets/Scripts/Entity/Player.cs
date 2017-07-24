@@ -1,5 +1,5 @@
 ﻿using System;
-using Assets.Scripts.Entity;
+using Assets.Scripts.Combat;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,31 +11,13 @@ public class Player : MovingObject, IAttackable {
     /// <summary>Stores a reference to the Player's animator component.</summary>
     private Animator _animator;
 
-    /// <summary>Stores the Player's Damage Reduction (percent value).</summary>
-    private byte _damageReduction;
-
-    /// <summary>Stores the Player's evasion (percent value).</summary>
-    private byte _evasion;
+    private CombatData _combatData;
 
     /// <summary>Stores the Player's current food points during the level.</summary>
     private int _food;
 
-    //// Stat Block 
-    /// TODO: Connect this stat block to their appropriate functionality.
-    /// <summary>Stores the Player's Health.</summary>
-    private ushort _healthPoints;
-
-    /// <summary>Stores the Player's Mana.</summary>
-    private ushort _manaPoints;
-
     /// <summary>Stores the Player's Movement Speed.</summary>
     private ushort _movementSpeed;
-
-    /// <summary>Stores the Player's Physical Damage stat.</summary>
-    private AttackInfo _sealie = new AttackInfo(10, DamageType.Blunt, "Vicious nose boop");
-
-    /// <summary>Stores the Player's Magic Damage stat.</summary>
-    private AttackInfo _unsealie = null;
 
     /// <summary>Number of points to add to player food resource when picking up a food object.</summary>
     public int PointsPerFood = 10;

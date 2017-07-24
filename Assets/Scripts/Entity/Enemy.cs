@@ -1,71 +1,75 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Assets.Scripts.Entity;
+using Assets.Scripts.Combat;
 using UnityEngine;
 using UnityEngine.Assertions.Comparers;
+using Random = UnityEngine.Random;
 
 /// <summary>
-/// This class is the general enemy class. It extends MovingObject and is expected to be extended by more specific
-/// classes for particular enemy behavior. It defines general functions that most enemies will need.
+///     This class is the general enemy class. It extends MovingObject and is expected to be extended by more specific
+///     classes for particular enemy behavior. It defines general functions that most enemies will need.
 /// </summary>
-public class Enemy : MovingObject, IAttackable
-{
-    /// <summary>The normal movement speed of the enemy</summary>
-    public int speed;
-    /// <summary> The minimum attack range for an enemy. Enemies will try to stay above this range</summary>
-    public int min_range;
+public class Enemy : MovingObject, IAttackable {
+    private readonly CombatData _combatData;
+
+    /// <summary> The state machine that handles state transitions. </summary>
+    private readonly StateMachine<Enemy> _stateMachine;
+
     /// <summary> The maximum attack range for an enemy. Enemies will try to stay below this range </summary>
     public int max_range;
+
+    /// <summary> The minimum attack range for an enemy. Enemies will try to stay above this range</summary>
+    public int min_range;
+
+    /// <summary>The normal movement speed of the enemy</summary>
+    public int speed;
+
+    private Enemy() {
+        _stateMachine = new StateMachine<Enemy>(this);
+        _stateMachine.CurrentState = StateAlert.getInstance();
+        _combatData = new CombatData();
+        _combatData.SealieAttack = new AttackInfo(5, DamageType.Blunt, "A harsh truth, told cruelly");
+    }
+
     /// <summary>The enemy's health points</summary>
     public ushort Health { get; set; }
 
     /// <summary>
-    /// The primary weapon of all enemies is the truth
+    ///     The primary weapon of all enemies is the truth
     /// </summary>
-    public AttackInfo Weapon = new AttackInfo(5, DamageType.Blunt, "A hard truth, told cruelly");
-
-    /// <summary> The state machine that handles state transitions. </summary>
-    private StateMachine<Enemy> _stateMachine;
-
-    Enemy() : base()
-    {
-        _stateMachine = new StateMachine<Enemy>(this);
-        _stateMachine.CurrentState = StateAlert.getInstance();
+    public AttackInfo Weapon {
+        get { return _combatData.SealieAttack; }
     }
 
     /// <summary>
-    /// Sets up the enemy on load and registers it with the game manager.
+    ///     Returns the state machine instance
     /// </summary>
-    void Awake()
-    {
+    /// <returns>The State Machine</returns>
+    public StateMachine<Enemy> StateMachine {
+        get { return _stateMachine; }
+    }
+
+    public CombatData ToCombatData() {
+        throw new NotImplementedException();
+    }
+
+    /// <summary>
+    ///     Sets up the enemy on load and registers it with the game manager.
+    /// </summary>
+    private void Awake() {
         GameManager.instance.RegisterEnemy(this);
     }
 
     /// <summary>
-    /// Returns the state machine instance
+    ///     Attempts to move this enemy towards the player.
     /// </summary>
-    /// <returns></returns>
-    public StateMachine<Enemy> StateMachine
-    {
-        get
-        {
-            return _stateMachine;
-        }
-    }
-
-    /// <summary>
-    /// Attempts to move this enemy towards the player. 
-    /// </summary>
-    public void SeekPlayer()
-    {
+    public void SeekPlayer() {
         int horizontal, vertical;
 
         //Find the player
-        Player playerObj = GameObject.FindObjectOfType<Player>();
+        var playerObj = FindObjectOfType<Player>();
 
         //Calculate a vector pointing from this enemy to the player
-        Vector2 playerDir =  playerObj.transform.position - transform.position;
+        Vector2 playerDir = playerObj.transform.position - transform.position;
 
         //Normalize the vector to a magnitude of 1
         playerDir.Normalize();
@@ -74,56 +78,57 @@ public class Enemy : MovingObject, IAttackable
         //Travel in the direction of whichever component is larger. In case of a tie, do a coin flip.
         float coinFlip;
         if (Math.Abs(Math.Abs(playerDir.x) - Math.Abs(playerDir.y)) < FloatComparer.kEpsilon) {
-            coinFlip = UnityEngine.Random.value;
-            if (coinFlip >=0.51) //Random.value returns a number between 0.0 and 1.0 inclusively
+            coinFlip = Random.value;
+            if (coinFlip >= 0.51) //Random.value returns a number between 0.0 and 1.0 inclusively
             {
                 horizontal = 1;
                 vertical = 0;
-            }
-            else
-            {
+            } else {
                 vertical = 1;
                 horizontal = 0;
             }
+        } else if (Math.Abs(playerDir.x) > Math.Abs(playerDir.y)) {
+            horizontal = 1;
+            vertical = 0;
+        } else {
+            horizontal = 0;
+            vertical = 1;
         }
-        else if (Math.Abs(playerDir.x) > Math.Abs(playerDir.y)) { horizontal = 1; vertical = 0; }
-        else { horizontal = 0; vertical = 1; }
 
         //If the original vector was negative, flip our movement direction.
-        if (playerDir.x <0) { horizontal *= -1;  }
-        if (playerDir.y < 0 ) { vertical *= -1; }
+        if (playerDir.x < 0) {
+            horizontal *= -1;
+        }
+        if (playerDir.y < 0) {
+            vertical *= -1;
+        }
 
         //***Simple and stupid obstacle avoidance***
         //Raycast in the direction of travel, if it hits a non-player blocking object, randomly generate a new location
         //to move to. Placeholder for actual pathfinding.
         RaycastHit2D hit;
-        if (RaycastInDirection(horizontal,vertical,out hit))
-        {
+        if (RaycastInDirection(horizontal, vertical, out hit)) {
+            while (RaycastInDirection(horizontal, vertical, out hit) && hit.transform != playerObj.transform) {
+                horizontal = (int) Random.Range(0, 1.99f);
+                if (horizontal == 0) {
+                    vertical = 1;
+                }
 
-            while (RaycastInDirection(horizontal, vertical, out hit) && hit.transform != playerObj.transform)
-            {
-                horizontal = (int)(UnityEngine.Random.Range(0, 1.99f));
-                if (horizontal == 0) { vertical = 1; }
-
-                coinFlip = UnityEngine.Random.value;
-                if (coinFlip >= 0.51) { horizontal *= -1; vertical *= -1; }
+                coinFlip = Random.value;
+                if (coinFlip >= 0.51) {
+                    horizontal *= -1;
+                    vertical *= -1;
+                }
             }
         }
 
         //move in the direction given
-        AttemptMove<Component>(horizontal,vertical);
+        AttemptMove<Component>(horizontal, vertical);
     }
 
-    protected override void OnCantMove<T>(T component)
-    {
+    protected override void OnCantMove<T>(T component) {
         if (component.tag == "Player") {
             Debug.Log("Penguin attacks player");
         }
-        return;
-    }
-
-    public CombatData ToCombatData()
-    {
-        throw new NotImplementedException();
     }
 }

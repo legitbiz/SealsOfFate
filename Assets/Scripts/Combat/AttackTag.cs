@@ -1,4 +1,4 @@
-﻿namespace Assets.Scripts.Entity {
+﻿namespace Assets.Scripts.Combat {
     /// <summary>
     /// Attack tag descriptor
     /// </summary>
