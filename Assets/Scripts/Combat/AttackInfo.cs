@@ -1,4 +1,4 @@
-﻿namespace Assets.Scripts.Combat {
+﻿namespace Combat {
     public enum DamageType {
         Blunt,
         Slashing,

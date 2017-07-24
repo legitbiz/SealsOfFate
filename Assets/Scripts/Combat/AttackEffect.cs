@@ -1,4 +1,4 @@
-﻿namespace Assets.Scripts.Combat {
+﻿namespace Combat {
     /// <summary>
     /// Abstract base class for Attack Effects
     /// </summary>

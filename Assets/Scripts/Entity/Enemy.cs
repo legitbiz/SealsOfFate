@@ -1,5 +1,5 @@
 ﻿using System;
-using Assets.Scripts.Combat;
+using Combat;
 using UnityEngine;
 using UnityEngine.Assertions.Comparers;
 using Random = UnityEngine.Random;
@@ -26,12 +26,17 @@ public class Enemy : MovingObject, IAttackable {
     private Enemy() {
         _stateMachine = new StateMachine<Enemy>(this);
         _stateMachine.CurrentState = StateAlert.getInstance();
+
+        // TODO this needs to be filled with appropriate information for an Enemy
+        // TODO Should wire up properties to data stored inside of CombatData so we can directly control these variables through the Unity UI
         _combatData = new CombatData();
         _combatData.SealieAttack = new AttackInfo(5, DamageType.Blunt, "A harsh truth, told cruelly");
     }
 
     /// <summary>The enemy's health points</summary>
-    public ushort Health { get; set; }
+    public ushort Health {
+        get { return _combatData.HealthPoints; }
+        set { _combatData.HealthPoints = value; } }
 
     /// <summary>
     ///     The primary weapon of all enemies is the truth
@@ -49,7 +54,20 @@ public class Enemy : MovingObject, IAttackable {
     }
 
     public CombatData ToCombatData() {
-        throw new NotImplementedException();
+        return _combatData.DeepClone();
+    }
+
+    public void Attack(IAttackable defender) {
+        // TODO this code is currently copypasta from the Player. That definitely needs to be changed.
+        var damage = CombatData.ComputeDamage(_combatData, defender.ToCombatData());
+        defender.TakeDamage(damage.DefenderDamage);
+        TakeDamage(damage.AttackerDamage);
+    }
+
+    public void TakeDamage(Damage damage) {
+        // TODO this code is currently copypasta from the Player. That definitely needs to be changed.
+        _combatData.HealthPoints -= damage.HealthDamage;
+        _combatData.ManaPoints -= damage.ManaDamage;
     }
 
     /// <summary>

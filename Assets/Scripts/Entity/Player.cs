@@ -1,5 +1,5 @@
 ﻿using System;
-using Assets.Scripts.Combat;
+using Combat;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,6 +11,10 @@ public class Player : MovingObject, IAttackable {
     /// <summary>Stores a reference to the Player's animator component.</summary>
     private Animator _animator;
 
+    /// <summary>
+    ///     Data about the player for combat purposes
+    /// </summary>
+    // TODO Create a default player CombatData to initialize during game start
     private CombatData _combatData;
 
     /// <summary>Stores the Player's current food points during the level.</summary>
@@ -35,8 +39,32 @@ public class Player : MovingObject, IAttackable {
     ///     Creates a CombatData object from the player
     /// </summary>
     /// <returns>A CombatData representing the player</returns>
+    /// <remarks>
+    ///     CombatData's deep clone is used to avoid combat changing actual state through an attacker or defender's
+    ///     effects/tags. The CombatResult can be extended to include changes to state or long-term effects for the
+    ///     player/enemy to suffer.
+    /// </remarks>
     public CombatData ToCombatData() {
-        throw new NotImplementedException();
+        return _combatData.DeepClone();
+    }
+
+    /// <summary>
+    ///     Attack something
+    /// </summary>
+    /// <param name="defender">The thing that may or may not defend itself</param>
+    public void Attack(IAttackable defender) {
+        var damage = CombatData.ComputeDamage(_combatData, defender.ToCombatData());
+        defender.TakeDamage(damage.DefenderDamage);
+        TakeDamage(damage.AttackerDamage);
+    }
+
+    /// <summary>
+    ///     Oh noes! I have been hit.
+    /// </summary>
+    /// <param name="damage">Damage to be dealt</param>
+    public void TakeDamage(Damage damage) {
+        _combatData.HealthPoints -= damage.HealthDamage;
+        _combatData.ManaPoints -= damage.ManaDamage;
     }
 
     /// <summary>

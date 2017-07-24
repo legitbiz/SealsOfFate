@@ -1,14 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using Assets.Scripts;
 
-namespace Assets.Scripts.Combat {
+namespace Combat
+{
+    public enum AttackType {
+        Sealie,
+        Unsealie
+    }
+
     /// <summary>
     ///     CombatData object.
     ///     Both an attacker and defender have CombatData. To prepare for combat, call ToCombatData() on each. Once you have a
     ///     CombatData for each, then use ComputeDamage(attacker, defender) to determine the damage. Once that's done, you'll
     ///     have an integer that you can subtract from someone's health.
     /// </summary>
-    public class CombatData {
+    public class CombatData : IDeepCloneable<CombatData> {
         private const byte MaxEvasion = 70;
         private readonly List<AttackEffect> _attackEffects = new List<AttackEffect>();
         private readonly List<AttackTag> _attackTags = new List<AttackTag>();
@@ -21,14 +28,29 @@ namespace Assets.Scripts.Combat {
         private byte _evasion;
 
         /// <summary>
+        ///     A list of attack tags
+        /// </summary>
+        public List<AttackTag> AttackTags {
+            get { return _attackTags; }
+            set { throw new NotImplementedException(); }
+        }
+
+        /// <summary>
+        ///     All them defense tags
+        /// </summary>
+        public List<DefenseTag> DefenseTags {
+            get { return _defenseTags; }
+        }
+
+        /// <summary>
         ///     The health of this object
         /// </summary>
-        public int HealthPoints { get; set; }
+        public ushort HealthPoints { get; set; }
 
         /// <summary>
         ///     ManaPoints from combat
         /// </summary>
-        public int ManaPoints { get; set; }
+        public ushort ManaPoints { get; set; }
 
         /// <summary>
         ///     Someone's armor
@@ -69,13 +91,36 @@ namespace Assets.Scripts.Combat {
         /// </summary>
         public bool Blocking { get; set; }
 
+        public CombatData DeepClone() {
+            var cd = new CombatData {
+                Evasion = Evasion,
+                DefenseInfo = DefenseInfo,
+                HealthPoints = HealthPoints,
+                ManaPoints = ManaPoints,
+                Armor = Armor,
+                Blocking = Blocking,
+                DamageReduction = DamageReduction,
+                SealieAttack = SealieAttack,
+                UnsealieAttack = UnsealieAttack
+            };
+
+            AttackTags.ForEach(t => cd.AttackTags.Add(t));
+            DefenseTags.ForEach(t => cd.DefenseTags.Add(t));
+
+            return cd;
+        }
+
+        object IDeepCloneable.DeepClone() {
+            return DeepClone();
+        }
+
         /// <summary>
         ///     Computes the damage inflicted by an attacker and defender
         /// </summary>
         /// <param name="attacker"></param>
         /// <param name="defender"></param>
         /// <returns></returns>
-        public static int ComputeDamage(CombatData attacker, CombatData defender) {
+        public static CombatResult ComputeDamage(CombatData attacker, CombatData defender) {
             // for each effect or tag in the attack
             attacker._attackTags.ForEach(tag => tag.Apply(ref defender));
 
@@ -93,7 +138,16 @@ namespace Assets.Scripts.Combat {
             // return the calcuated damage
             damage -= defender.Armor;
 
-            return damage < 0 ? 0 : damage;
+            return new CombatResult {
+                DefenderDamage = {
+                    HealthDamage = (ushort) (damage < 0 ? 0 : damage),
+                    ManaDamage = 0
+                },
+                AttackerDamage = {
+                    HealthDamage = 0,
+                    ManaDamage = 0
+                }
+            };
         }
     }
 }

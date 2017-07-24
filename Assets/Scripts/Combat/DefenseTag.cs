@@ -1,4 +1,4 @@
-﻿namespace Assets.Scripts.Combat {
+﻿namespace Combat {
     /// <summary>
     /// A tag describing defense
     /// </summary>

@@ -1,8 +1,8 @@
-﻿namespace Assets.Scripts.Combat {
+﻿namespace Combat {
     /// <summary>
     /// Attack tag descriptor
     /// </summary>
-    internal abstract class AttackTag {
+    public abstract class AttackTag {
         /// <summary>
         /// Applies the attack tag to a defender's combat data
         /// </summary>
