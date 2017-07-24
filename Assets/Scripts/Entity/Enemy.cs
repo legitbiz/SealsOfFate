@@ -36,7 +36,8 @@ public class Enemy : MovingObject, IAttackable {
     /// <summary>The enemy's health points</summary>
     public ushort Health {
         get { return _combatData.HealthPoints; }
-        set { _combatData.HealthPoints = value; } }
+        set { _combatData.HealthPoints = value; }
+    }
 
     /// <summary>
     ///     The primary weapon of all enemies is the truth
@@ -53,10 +54,23 @@ public class Enemy : MovingObject, IAttackable {
         get { return _stateMachine; }
     }
 
+    /// <summary>
+    ///     Creates a CombatData object this particular enemy
+    /// </summary>
+    /// <returns>A CombatData representing the enemy</returns>
+    /// <remarks>
+    ///     CombatData's deep clone is used to avoid combat changing actual state through an attacker or defender's
+    ///     effects/tags. The CombatResult can be extended to include changes to state or long-term effects for the
+    ///     player/enemy to suffer.
+    /// </remarks>
     public CombatData ToCombatData() {
         return _combatData.DeepClone();
     }
 
+    /// <summary>
+    ///     Attack something
+    /// </summary>
+    /// <param name="defender">The thing that may or may not defend itself</param>
     public void Attack(IAttackable defender) {
         // TODO this code is currently copypasta from the Player. That definitely needs to be changed.
         var damage = CombatData.ComputeDamage(_combatData, defender.ToCombatData());
@@ -64,6 +78,10 @@ public class Enemy : MovingObject, IAttackable {
         TakeDamage(damage.AttackerDamage);
     }
 
+    /// <summary>
+    ///     Oh noes! I have been hit.
+    /// </summary>
+    /// <param name="damage">Damage to be dealt</param>
     public void TakeDamage(Damage damage) {
         // TODO this code is currently copypasta from the Player. That definitely needs to be changed.
         _combatData.HealthPoints -= damage.HealthDamage;

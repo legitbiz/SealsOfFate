@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 ///     GameObjects in the generated scene.
 /// </summary>
 public class Player : MovingObject, IAttackable {
+    
+
     /// <summary>Stores a reference to the Player's animator component.</summary>
     private Animator _animator;
 
@@ -34,6 +36,15 @@ public class Player : MovingObject, IAttackable {
 
     /// <summary>How much damage the Player inflicts to the Wall object when it attacks.</summary>
     public int WallDamage = 1;
+
+    public Player() {
+        // TODO populate me
+        _combatData = new CombatData {
+            HealthPoints = 100,
+            ManaPoints = 10,
+            SealieAttack = new AttackInfo(10, DamageType.Blunt, "A vicious nose boop")
+        };
+}
 
     /// <summary>
     ///     Creates a CombatData object from the player
@@ -64,6 +75,8 @@ public class Player : MovingObject, IAttackable {
     /// <param name="damage">Damage to be dealt</param>
     public void TakeDamage(Damage damage) {
         _combatData.HealthPoints -= damage.HealthDamage;
+        GameManager.instance.playerHealth -= damage.HealthDamage;
+
         _combatData.ManaPoints -= damage.ManaDamage;
     }
 
@@ -75,7 +88,7 @@ public class Player : MovingObject, IAttackable {
         _animator = GetComponent<Animator>();
 
         // Get the current food point total stored in GameManager.instance between levels.
-        _food = GameManager.instance.playerHealth;
+        _combatData.HealthPoints = GameManager.instance.playerHealth;
 
         // Call the Start function of the MovingObject base class.
         base.Start();
@@ -87,7 +100,7 @@ public class Player : MovingObject, IAttackable {
     /// </summary>
     /// <remarks>Currently only stores the Player's food.</remarks>
     private void OnDisable() {
-        GameManager.instance.playerHealth = _food;
+        GameManager.instance.playerHealth = _combatData.HealthPoints;
     }
 
     /// <summary>
