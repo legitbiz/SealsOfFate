@@ -13,7 +13,7 @@
     /// <summary>
     /// Sample implementation for AttackEffect of an Unblockable Attack
     /// </summary>
-    internal class Unblockable : AttackEffect {
+    public class Unblockable : AttackEffect {
         /// <summary>
         /// Applies the unblockable modifier to this attack - removes the defender's Blocking modifier.
         /// </summary>
