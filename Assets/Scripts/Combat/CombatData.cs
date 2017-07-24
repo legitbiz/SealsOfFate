@@ -45,12 +45,12 @@ namespace Combat
         /// <summary>
         ///     The health of this object
         /// </summary>
-        public ushort HealthPoints { get; set; }
+        public short HealthPoints { get; set; }
 
         /// <summary>
         ///     ManaPoints from combat
         /// </summary>
-        public ushort ManaPoints { get; set; }
+        public short ManaPoints { get; set; }
 
         /// <summary>
         ///     Someone's armor
@@ -131,7 +131,7 @@ namespace Combat
             // TODO: combat needs to be modified to send in current AttackInfo. For now we assume combat is all melee.
             var damage = attacker.SealieAttack.Damage;
 
-            if (defender.DefenseInfo.DamageType == attacker.SealieAttack.DamageType) {
+            if (defender.DefenseInfo != null && defender.DefenseInfo.DamageType == attacker.SealieAttack.DamageType) {
                 damage = (int) Math.Floor(damage * 0.01m * defender.DefenseInfo.DamageMitigation);
             }
 
@@ -140,7 +140,7 @@ namespace Combat
 
             return new CombatResult {
                 DefenderDamage = {
-                    HealthDamage = (ushort) (damage < 0 ? 0 : damage),
+                    HealthDamage = (short) (damage < 0 ? 0 : damage),
                     ManaDamage = 0
                 },
                 AttackerDamage = {

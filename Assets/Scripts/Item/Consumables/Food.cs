@@ -32,6 +32,6 @@ public class Food : Consumable {
             newHealth = ushort.MaxValue;
         }
 
-        GameManager.instance.playerHealth = (ushort) newHealth;
+        GameManager.instance.playerHealth = (short)newHealth;
     }
 }

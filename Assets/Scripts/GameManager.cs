@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
 
     private List<MovingObject> entitiesToMove;
 
-    public ushort playerHealth;
+    public short playerHealth;
 
     public void RegisterEnemy(MovingObject enemyToRegister)
     {

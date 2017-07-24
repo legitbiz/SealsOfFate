@@ -1,7 +1,7 @@
 ﻿namespace Combat {
     public class Damage
     {
-        public ushort HealthDamage { get; set; }
-        public ushort ManaDamage { get; set; }
+        public short HealthDamage { get; set; }
+        public short ManaDamage { get; set; }
     }
 }

@@ -34,7 +34,7 @@ public class Enemy : MovingObject, IAttackable {
     }
 
     /// <summary>The enemy's health points</summary>
-    public ushort Health {
+    public short Health {
         get { return _combatData.HealthPoints; }
         set { _combatData.HealthPoints = value; }
     }
@@ -74,6 +74,7 @@ public class Enemy : MovingObject, IAttackable {
     public void Attack(IAttackable defender) {
         // TODO this code is currently copypasta from the Player. That definitely needs to be changed.
         var damage = CombatData.ComputeDamage(_combatData, defender.ToCombatData());
+        Debug.Log(String.Format("penguin inflicts {0} damage on player", damage.DefenderDamage.HealthDamage));
         defender.TakeDamage(damage.DefenderDamage);
         TakeDamage(damage.AttackerDamage);
     }
@@ -86,6 +87,10 @@ public class Enemy : MovingObject, IAttackable {
         // TODO this code is currently copypasta from the Player. That definitely needs to be changed.
         _combatData.HealthPoints -= damage.HealthDamage;
         _combatData.ManaPoints -= damage.ManaDamage;
+
+        if (_combatData.HealthPoints <= 0) {
+            Debug.Log("In theory, this penguin is dead");
+        }
     }
 
     /// <summary>
@@ -165,6 +170,9 @@ public class Enemy : MovingObject, IAttackable {
     protected override void OnCantMove<T>(T component) {
         if (component.tag == "Player") {
             Debug.Log("Penguin attacks player");
+            var player = FindObjectOfType<Player>();
+            Attack(player);
+
         }
     }
 }

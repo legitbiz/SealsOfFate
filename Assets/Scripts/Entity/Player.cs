@@ -65,6 +65,7 @@ public class Player : MovingObject, IAttackable {
     /// <param name="defender">The thing that may or may not defend itself</param>
     public void Attack(IAttackable defender) {
         var damage = CombatData.ComputeDamage(_combatData, defender.ToCombatData());
+        Debug.Log(String.Format("player inflicts {0} damage on penguin", damage.DefenderDamage.HealthDamage));
         defender.TakeDamage(damage.DefenderDamage);
         TakeDamage(damage.AttackerDamage);
     }
@@ -78,6 +79,11 @@ public class Player : MovingObject, IAttackable {
         GameManager.instance.playerHealth -= damage.HealthDamage;
 
         _combatData.ManaPoints -= damage.ManaDamage;
+
+        if (_combatData.HealthPoints <= 0)
+        {
+            Debug.Log("In theory, this penguin is dead");
+        }
     }
 
     /// <summary>
@@ -171,8 +177,10 @@ public class Player : MovingObject, IAttackable {
     /// </summary>
     /// <param name="component">An interactable entity, such as a wall or an enemy.</param>
     protected override void OnCantMove<T>(T component) {
-        if (component.tag == "Enemy") {
+        if (component.CompareTag("Enemy")) {
             Debug.Log("Player attacks penguin");
+            var enemy = component.gameObject.GetComponent<Enemy>();
+            Attack(enemy);
         }
     }
 
