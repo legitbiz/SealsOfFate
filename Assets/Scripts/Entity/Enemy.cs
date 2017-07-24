@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Combat;
 using UnityEngine;
 using UnityEngine.Assertions.Comparers;
@@ -168,11 +169,10 @@ public class Enemy : MovingObject, IAttackable {
     }
 
     protected override void OnCantMove<T>(T component) {
-        if (component.tag == "Player") {
+        if (component.CompareTag("Player")) {
             Debug.Log("Penguin attacks player");
             var player = FindObjectOfType<Player>();
             Attack(player);
-
         }
     }
 }
