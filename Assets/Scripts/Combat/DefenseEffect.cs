@@ -8,6 +8,4 @@ namespace Assets.Scripts.Combat
     public abstract class DefenseEffect {
         public abstract void Apply(ref CombatData cd);
     }
-
-    
 }

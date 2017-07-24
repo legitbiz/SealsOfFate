@@ -1,4 +1,10 @@
 ﻿namespace Assets.Scripts {
+
+    public interface IDeepCloneable
+    {
+        object DeepClone();
+    }
+
     /// <summary>
     ///     Provides a deep clone interface to avoid the use of either copy constructors or the ICloneable.
     /// </summary>
@@ -10,10 +16,8 @@
     ///     https://blogs.msdn.microsoft.com/brada/2003/04/09/implementing-icloneable/
     /// </remarks>
     public interface IDeepCloneable<T> : IDeepCloneable {
-        T DeepClone();
+        new T DeepClone();
     }
 
-    public interface IDeepCloneable {
-        object DeepClone();
-    }
+    
 }

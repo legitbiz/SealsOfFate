@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Assets.Scripts.Combat {
     /// <summary>
@@ -12,10 +12,12 @@ namespace Assets.Scripts.Combat {
         private const byte MaxEvasion = 70;
         private readonly List<AttackEffect> _attackEffects = new List<AttackEffect>();
         private readonly List<AttackTag> _attackTags = new List<AttackTag>();
-        private readonly List<DefenseInfo> _defenseEffects = new List<DefenseInfo>();
+        private readonly List<DefenseEffect> _defenseEffects = new List<DefenseEffect>();
         private readonly List<DefenseTag> _defenseTags = new List<DefenseTag>();
 
-
+        /// <summary>
+        ///     percent chance to evade
+        /// </summary>
         private byte _evasion;
 
         /// <summary>
@@ -76,14 +78,17 @@ namespace Assets.Scripts.Combat {
         public static int ComputeDamage(CombatData attacker, CombatData defender) {
             // for each effect or tag in the attack
             attacker._attackTags.ForEach(tag => tag.Apply(ref defender));
-            attacker._attackEffects.ForEach(effect => effect.Apply(ref defender));
 
             // consult the DefenseEffects and apply any defense modifiers
             defender._defenseTags.ForEach(t => t.Apply(ref attacker));
 
             // Calculate damage
-            var damage = defender._defenseEffects.Where(effect => effect.DamageType == attacker.SealieAttack.DamageType)
-                .Aggregate(attacker.SealieAttack.Damage, (current, effect) => current - effect.DamageMitigation);
+            // TODO: combat needs to be modified to send in current AttackInfo. For now we assume combat is all melee.
+            var damage = attacker.SealieAttack.Damage;
+
+            if (defender.DefenseInfo.DamageType == attacker.SealieAttack.DamageType) {
+                damage = (int) Math.Floor(damage * 0.01m * defender.DefenseInfo.DamageMitigation);
+            }
 
             // return the calcuated damage
             damage -= defender.Armor;
