@@ -1,5 +1,5 @@
 ﻿namespace Combat {
-    public class Damage
+    public class Damage : UnityEngine.Object
     {
         public short HealthDamage { get; set; }
         public short ManaDamage { get; set; }

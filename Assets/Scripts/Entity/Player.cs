@@ -17,6 +17,7 @@ public class Player : MovingObject, IAttackable {
     ///     Data about the player for combat purposes
     /// </summary>
     // TODO Create a default player CombatData to initialize during game start
+    [SerializeField]
     private CombatData _combatData;
 
     /// <summary>Stores the Player's current food points during the level.</summary>
@@ -39,11 +40,11 @@ public class Player : MovingObject, IAttackable {
 
     public Player() {
         // TODO populate me
-        _combatData = new CombatData {
-            HealthPoints = 100,
-            ManaPoints = 10,
-            SealieAttack = new AttackInfo(10, DamageType.Blunt, "A vicious nose boop")
-        };
+        //_combatData = new CombatData {
+        //    HealthPoints = 100,
+        //    ManaPoints = 10,
+        //    SealieAttack = new AttackInfo(10, DamageType.Blunt, "A vicious nose boop")
+        //};
 }
 
     /// <summary>

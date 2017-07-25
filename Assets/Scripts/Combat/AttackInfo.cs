@@ -7,7 +7,7 @@
         Cold
     }
 
-    public class AttackInfo {
+    public class AttackInfo : UnityEngine.Object {
         /// <summary>
         ///     Creates a new SealieAttack
         /// </summary>

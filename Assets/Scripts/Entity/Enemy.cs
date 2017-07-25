@@ -10,6 +10,7 @@ using Random = UnityEngine.Random;
 ///     classes for particular enemy behavior. It defines general functions that most enemies will need.
 /// </summary>
 public class Enemy : MovingObject, IAttackable {
+    [SerializeField]
     private readonly CombatData _combatData;
 
     /// <summary> The state machine that handles state transitions. </summary>
@@ -27,15 +28,10 @@ public class Enemy : MovingObject, IAttackable {
     private Enemy() {
         _stateMachine = new StateMachine<Enemy>(this);
         _stateMachine.CurrentState = StateAlert.getInstance();
-
-        // TODO this needs to be filled with appropriate information for an Enemy
-        // TODO Should wire up properties to data stored inside of CombatData so we can directly control these variables through the Unity UI
-        _combatData = new CombatData();
-        _combatData.SealieAttack = new AttackInfo(5, DamageType.Blunt, "A harsh truth, told cruelly");
     }
 
     /// <summary>The enemy's health points</summary>
-    public short Health {
+    public int Health {
         get { return _combatData.HealthPoints; }
         set { _combatData.HealthPoints = value; }
     }

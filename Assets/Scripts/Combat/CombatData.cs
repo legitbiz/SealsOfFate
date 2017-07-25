@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Assets.Scripts;
+using UnityEngine;
 
-namespace Combat
-{
+namespace Combat {
     public enum AttackType {
         Sealie,
         Unsealie
@@ -15,24 +15,41 @@ namespace Combat
     ///     CombatData for each, then use ComputeDamage(attacker, defender) to determine the damage. Once that's done, you'll
     ///     have an integer that you can subtract from someone's health.
     /// </summary>
-    public class CombatData : IDeepCloneable<CombatData> {
-        private const byte MaxEvasion = 70;
-        private readonly List<AttackEffect> _attackEffects = new List<AttackEffect>();
-        private readonly List<AttackTag> _attackTags = new List<AttackTag>();
-        private readonly List<DefenseEffect> _defenseEffects = new List<DefenseEffect>();
-        private readonly List<DefenseTag> _defenseTags = new List<DefenseTag>();
+    [Serializable]
+    public class CombatData : MonoBehaviour, IDeepCloneable<CombatData> {
+        [SerializeField] private List<AttackEffect> _attackEffects;
+
+        [SerializeField] private List<AttackTag> _attackTags;
+
+        [SerializeField] private List<DefenseEffect> _defenseEffects;
+
+        [SerializeField] private List<DefenseTag> _defenseTags;
 
         /// <summary>
-        ///     percent chance to evade
+        ///     Someone's armor
         /// </summary>
-        private byte _evasion;
+        [Range(0, 16384)] public int Armor;
+
+        /// <summary>
+        ///     Chance to evade (between 0 and 70)
+        /// </summary>
+        [Range(0, 70)] public int Evasion;
+
+        /// <summary>
+        ///     The health of this object
+        /// </summary>
+        [Range(0, 32768)] public int HealthPoints;
+
+        /// <summary>
+        ///     ManaPoints from combat
+        /// </summary>
+        [Range(0, 32768)] public int ManaPoints;
 
         /// <summary>
         ///     A list of attack tags
         /// </summary>
         public List<AttackTag> AttackTags {
             get { return _attackTags; }
-            set { throw new NotImplementedException(); }
         }
 
         /// <summary>
@@ -41,21 +58,6 @@ namespace Combat
         public List<DefenseTag> DefenseTags {
             get { return _defenseTags; }
         }
-
-        /// <summary>
-        ///     The health of this object
-        /// </summary>
-        public short HealthPoints { get; set; }
-
-        /// <summary>
-        ///     ManaPoints from combat
-        /// </summary>
-        public short ManaPoints { get; set; }
-
-        /// <summary>
-        ///     Someone's armor
-        /// </summary>
-        public int Armor { get; set; }
 
         /// <summary>
         ///     The sealie (melee) attack info
@@ -72,13 +74,6 @@ namespace Combat
         /// </summary>
         public DefenseInfo DefenseInfo { get; set; }
 
-        /// <summary>
-        ///     Chance to evade (between 0 and 100)
-        /// </summary>
-        public byte Evasion {
-            get { return _evasion; }
-            set { _evasion = value > MaxEvasion ? MaxEvasion : value; }
-        }
 
         /// <summary>
         ///     The player's default damage reduction rating.

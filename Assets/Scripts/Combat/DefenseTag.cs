@@ -2,7 +2,7 @@
     /// <summary>
     /// A tag describing defense
     /// </summary>
-    public abstract class DefenseTag {
+    public abstract class DefenseTag : UnityEngine.Object {
         /// <summary>
         /// Applies the tag to the CombatData
         /// </summary>

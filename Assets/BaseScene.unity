@@ -173,6 +173,30 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 84d5fa99bfd488747bf2969b8fa96a23, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &723018085 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1780647233420238, guid: 84d5fa99bfd488747bf2969b8fa96a23,
+    type: 2}
+  m_PrefabInternal: {fileID: 723018084}
+--- !u!114 &723018086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 723018085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2623c5733294db892209dd6b492116b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _attackTags: []
+  _defenseEffects: []
+  _defenseTags: []
+  Evasion: 0
+  HamCount: 0
+  HealthPoints: 32768
+  ManaPoints: 17772
+  Armor: 10076
 --- !u!1 &1401195144
 GameObject:
   m_ObjectHideFlags: 0

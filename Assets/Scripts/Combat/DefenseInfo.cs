@@ -2,7 +2,7 @@
     /// <summary>
     ///     Information about defense
     /// </summary>
-    public class DefenseInfo {
+    public class DefenseInfo : UnityEngine.Object {
         private const int MaxDamageMitigation = 100;
         private byte _damageMitigation;
 
