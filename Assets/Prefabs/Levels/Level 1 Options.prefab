@@ -66,3 +66,6 @@ MonoBehaviour:
   Obstacles: []
   Walls:
   - {fileID: 1126637172613874, guid: da06bfd96e18e6141bccb22e8f52e66e, type: 2}
+  EnemyWeight: 0.15
+  LootWeight: 0.1
+  ObstaclesWeight: 0.01

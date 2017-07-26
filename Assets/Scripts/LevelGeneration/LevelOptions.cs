@@ -1,5 +1,17 @@
 using UnityEngine;
 using System;
+    /// <summary> enum abstraction of each tile that could be places on the board </summary>
+    public enum LevelDecoration {
+        NOTHING,
+        Floor,
+        Wall,
+        Enemy,
+        Loot,
+        Obstacles,
+        Start,
+        Exit,
+        TOTAL
+    }
 
     [Serializable]
     public class LevelOptions : MonoBehaviour {
@@ -30,6 +42,14 @@ using System;
         /// <summary> Collection of Walls to be used for generating the level </summary>
         public GameObject[] Walls;
 
-        /// <summary> sets up the level </summary>
 
-    }
+        /// <summary> Weight for Enemies </summary>
+        [Range(0f,1f)]
+        public float EnemyWeight;
+        /// <summary> Weight for Loot </summary>        
+        [Range(0f,1f)]
+        public float LootWeight;
+        /// <summary> Weight for Obstacles </summary>
+        [Range(0f,1f)]
+        public float ObstaclesWeight;
+}
