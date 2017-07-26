@@ -11,7 +11,7 @@ using Random = UnityEngine.Random;
 /// </summary>
 public class Enemy : MovingObject, IAttackable {
     [SerializeField]
-    private readonly CombatData _combatData;
+    private CombatData _combatData;
 
     /// <summary> The state machine that handles state transitions. </summary>
     private readonly StateMachine<Enemy> _stateMachine;

@@ -1,4 +1,7 @@
-﻿namespace Combat {
+﻿using System;
+using UnityEngine;
+
+namespace Combat {
     public enum DamageType {
         Blunt,
         Slashing,
@@ -7,7 +10,8 @@
         Cold
     }
 
-    public class AttackInfo : UnityEngine.Object {
+    [Serializable]
+    public class AttackInfo {
         /// <summary>
         ///     Creates a new SealieAttack
         /// </summary>
@@ -23,16 +27,16 @@
         /// <summary>
         ///     The damage done by this SealieAttack
         /// </summary>
-        public int Damage { get; set; }
+        public int Damage;
 
         /// <summary>
         ///     The type of damage done by this SealieAttack
         /// </summary>
-        public DamageType DamageType { get; set; }
+        public DamageType DamageType;
 
         /// <summary>
         ///     A description of the SealieAttack (e.g. sword, tentacle, burning fart)
         /// </summary>
-        public string Description { get; set; }
+        public string Description;
     }
 }

@@ -62,29 +62,29 @@ namespace Combat {
         /// <summary>
         ///     The sealie (melee) attack info
         /// </summary>
-        public AttackInfo SealieAttack { get; set; }
+        public AttackInfo SealieAttack;
 
         /// <summary>
         ///     The unsealie (magic) attack info
         /// </summary>
-        public AttackInfo UnsealieAttack { get; set; }
+        public AttackInfo UnsealieAttack;
 
         /// <summary>
         ///     The defense info
         /// </summary>
-        public DefenseInfo DefenseInfo { get; set; }
+        public DefenseInfo DefenseInfo;
 
 
         /// <summary>
         ///     The player's default damage reduction rating.
         ///     Incoming damage is reduced by this percent.
         /// </summary>
-        public byte DamageReduction { get; set; }
+        [Range(0, 100)] public int DamageReduction;
 
         /// <summary>
         ///     Is this combatant blocking?
         /// </summary>
-        public bool Blocking { get; set; }
+        public bool Blocking;
 
         public CombatData DeepClone() {
             var cd = new CombatData {

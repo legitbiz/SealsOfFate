@@ -192,11 +192,21 @@ MonoBehaviour:
   _attackTags: []
   _defenseEffects: []
   _defenseTags: []
+  Armor: 0
   Evasion: 0
-  HamCount: 0
-  HealthPoints: 32768
-  ManaPoints: 17772
-  Armor: 10076
+  HealthPoints: 0
+  ManaPoints: 0
+  SealieAttack:
+    Damage: 100
+    DamageType: 0
+    Description: A vicious nose boop
+  UnsealieAttack:
+    Damage: 250
+    DamageType: 3
+    Description: Fart power
+  DefenseInfo: {fileID: 0}
+  DamageReduction: 0
+  Blocking: 0
 --- !u!1 &1401195144
 GameObject:
   m_ObjectHideFlags: 0

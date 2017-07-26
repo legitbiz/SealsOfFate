@@ -1,7 +1,10 @@
-﻿namespace Combat {
+﻿using System;
+
+namespace Combat {
     /// <summary>
     ///     Information about defense
     /// </summary>
+    [Serializable]
     public class DefenseInfo : UnityEngine.Object {
         private const int MaxDamageMitigation = 100;
         private byte _damageMitigation;
