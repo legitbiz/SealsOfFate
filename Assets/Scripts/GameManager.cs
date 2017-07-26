@@ -24,6 +24,10 @@ namespace Assets.Scripts {
         }
 
         public bool IsMoving { get; set; }
+        public LevelManager LevelScript {
+            get { return _levelScript; }
+            set { _levelScript = value; }
+        }
 
         public void RegisterEnemy(MovingObject enemyToRegister) {
             _entitiesToMove.Add(enemyToRegister);
@@ -41,7 +45,7 @@ namespace Assets.Scripts {
             DontDestroyOnLoad(gameObject);
 
             // Grab the currently attached levelManager script
-            _levelScript = GetComponent<LevelManager>();
+            LevelScript = GetComponent<LevelManager>();
             // Setup the level.
             _entitiesToMove = new List<MovingObject>();
             InitLevel();
@@ -90,7 +94,7 @@ namespace Assets.Scripts {
         }
 
         private void InitLevel() {
-            _levelScript.SetupScene(currentLevel);
+            LevelScript.SetupScene(currentLevel);
         }
 
         public void GameOver() { }

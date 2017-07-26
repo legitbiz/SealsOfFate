@@ -65,6 +65,7 @@ public class Enemy : MovingObject, IAttackable
         //Find the player
         Player playerObj = GameObject.FindObjectOfType<Player>();
 
+        /*
         //Calculate a vector pointing from this enemy to the player
         Vector2 playerDir =  playerObj.transform.position - transform.position;
 
@@ -110,9 +111,18 @@ public class Enemy : MovingObject, IAttackable
                 if (coinFlip >= 0.51) { horizontal *= -1; vertical *= -1; }
             }
         }
-
+        */
+        var pathFinder = new SearchAStar(GameManager.Instance.LevelScript.CurrentLevel.FeatureMap,
+            transform.position, playerObj.transform.position,
+            new ManhattenDistance());
+        var destination = pathFinder.Search();
+        if (destination == null) {
+            Debug.Log("Pathfinding: Enemy cannot find valid path to target! " + transform);
+            return;
+        }
+        var direction = destination[0].destination - (Vector2)transform.position;
         //move in the direction given
-        AttemptMove<Component>(horizontal,vertical);
+        AttemptMove<Component>((int)direction.x,(int)direction.y);
     }
 
     protected override void OnCantMove<T>(T component)
