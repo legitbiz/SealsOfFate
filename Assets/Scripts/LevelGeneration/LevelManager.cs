@@ -14,49 +14,22 @@ namespace Assets.Scripts.LevelGeneration {
         Exit,
         TOTAL
     }
-
+    [System.Serializable]
     /// <summary> The levelManager Class handles the level generation for each level </summary>
     public class LevelManager : MonoBehaviour {
         /// <summary> The Board that is being created </summary>
         private Transform _boardHolder;
-
-        /// <summary> Chunk size to generate </summary>
-        public int ChunkSize;
+        public LevelOptions CurrentLevelOptions;
 
         /// <summary> The level that will be created </summary>
         public Level CurrentLevel;
 
-        /// <summary> Collection of Doors to be used for generating the level </summary>
-        public GameObject[] Doors;
-
-        /// <summary> Collection of Enemies to be used for generating the level </summary>
-        public GameObject[] Enemies;
-
-        /// <summary> Collection of Floors to be used for generating the level </summary>
-        public GameObject[] Floors;
-
-        /// <summary> Collection of Loot to be used for generating the level </summary>
-        public GameObject[] Loot;
-
-        /// <summary> Maximum number of rooms to generate </summary>
-        public int MaxChunks;
-
-        /// <summary> Minimum number of rooms to generate </summary>
-        public int MinChunks;
-
-        /// <summary> Collection of Obstacles to be used for generating the level </summary>
-        public GameObject[] Obstacles;
-
-        /// <summary> Collection of Walls to be used for generating the level </summary>
-        public GameObject[] Walls;
-
-        /// <summary> sets up the level </summary>
         private void BoardSetup() {
             //Instantiate Board and set boardHolder to its transform.
             _boardHolder = new GameObject("Board").transform;
             // create and setup the level
             CurrentLevel = new Level();
-            CurrentLevel.Generate(MinChunks, MaxChunks, ChunkSize);
+            CurrentLevel.Generate(CurrentLevelOptions.MinChunks, CurrentLevelOptions.MaxChunks, CurrentLevelOptions.ChunkSize);
             //Loop along x axis, starting from -1 (to fill corner) with floor or outerwall edge tiles.
             for (var x = 0; x < CurrentLevel.XRange.max; x++) {
                 //Loop along y axis, starting from -1 to place floor or outerwall tiles.
@@ -65,11 +38,11 @@ namespace Assets.Scripts.LevelGeneration {
                     GameObject toInstantiate = null;
 
                     if (CurrentLevel.FeatureMap[x, y] == (int) LevelDecoration.Floor) {
-                        toInstantiate = Floors[Random.Range(0, Floors.Length)];
+                        toInstantiate = CurrentLevelOptions.Floors[Random.Range(0, CurrentLevelOptions.Floors.Length)];
                     }
                     //Check if we current position is at board edge, if so choose a random outer wall prefab from our array of outer wall tiles.
                     if (CurrentLevel.FeatureMap[x, y] == (int) LevelDecoration.Wall) {
-                        toInstantiate = Walls[Random.Range(0, Walls.Length)];
+                        toInstantiate = CurrentLevelOptions.Walls[Random.Range(0, CurrentLevelOptions.Walls.Length)];
                     }
 
                     if (toInstantiate) {

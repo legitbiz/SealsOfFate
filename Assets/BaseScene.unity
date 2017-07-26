@@ -297,17 +297,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 359764853adfa504ab6729475996d35e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Walls:
-  - {fileID: 1126637172613874, guid: da06bfd96e18e6141bccb22e8f52e66e, type: 2}
-  Floors:
-  - {fileID: 1107012629488888, guid: 4b6ecfed334523d4b80d9a04140b840b, type: 2}
-  Enemies: []
-  Loot: []
-  Doors: []
-  Obstacles: []
-  MaxChunks: 1000
-  MinChunks: 500
-  ChunkSize: 3
+  CurrentLevelOptions: {fileID: 114687594380328474, guid: e714036becfb6c645b04cfe0ae4cf006,
+    type: 2}
 --- !u!114 &1978801242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -320,9 +311,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86b9d09d417ff6943ba1fb04e69ead27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxLevel: 15
-  playersTurn: 1
-  playerHealth: 0
+  MaxLevel: 0
+  PlayerHealth: 0
+  PlayersTurn: 1
 --- !u!4 &1978801243
 Transform:
   m_ObjectHideFlags: 0
