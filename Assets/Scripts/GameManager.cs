@@ -68,6 +68,14 @@ namespace Assets.Scripts {
                                 //Cast to an enemy, and update it's state machine
                                 //Candidate for refactoring to avoid the cast
                                 var enemy = (Enemy) _entitiesToMove[_enemyTurn];
+                                var distanceFromPlayer = (GameObject.FindGameObjectWithTag("Player").transform.position
+                                    - enemy.transform.position).sqrMagnitude;
+                                if (distanceFromPlayer >= 200f) {
+                                    enemy.StateMachine.ChangeState(StateAsleep.getInstance());
+                                }
+                                else if (distanceFromPlayer < 200f && enemy.StateMachine.IsInState(StateAsleep.getInstance())) {
+                                    enemy.StateMachine.RevertState();
+                                }
                                 enemy.StateMachine.Update();
                             }
                             //Increment to the next enemy
