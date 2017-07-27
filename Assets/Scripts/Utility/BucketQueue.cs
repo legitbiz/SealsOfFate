@@ -99,10 +99,9 @@ namespace Assets.Scripts.Utility
         /// </summary>
         /// <returns>The item at the front of the queue</returns>
         public T Peek() {
-            int i = 0;
             if (Count == 0) {
                 throw new InvalidOperationException("Empty Queue");}
-            return Buckets.Values.First(b => b != null).First();
+            return Buckets.Values.First(b => b != null && b.Count != 0).First();
         }
     }
 }
