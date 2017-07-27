@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.LevelGeneration;
+using Assets.Scripts.Utility;
 using UnityEngine;
 using Debug = System.Diagnostics.Debug;
 
@@ -44,15 +45,14 @@ public class SearchAStar {
         };
 
         //TODO Replace with a priority queue
-        var openList = new List<NodeRecord>();
-        var closedList = new List<NodeRecord>();
+        var openList = new BucketQueue<NodeRecord>();
+        var closedList = new BucketQueue<NodeRecord>();
 
-        openList.Add(startRecord);
+        openList.Enqueue(startRecord,(int)startRecord.EstimatedTotalCost);
 
         NodeRecord current = null;
         while (openList.Count > 0) {
-            //TODO: Get node with smallest estimate
-            current = openList[0];
+            current = openList.Peek();
 
             //If we're at the goal, end early
             if (current.Location.Equals(_end)) {
@@ -78,7 +78,7 @@ public class SearchAStar {
                         continue;
                     }
                     //Otherwise, remove it from the closed list
-                    closedList.Remove(endNodeRecord);
+                    closedList.Remove(endNodeRecord,(int)endNodeRecord.EstimatedTotalCost);
                     //Recalculate the heuristic. TODO: recalculate using old values
                     endHeuristic = _heuristic.Estimate(endLoc);
                 }
@@ -103,12 +103,12 @@ public class SearchAStar {
                 endNodeRecord.EstimatedTotalCost = endCost + endHeuristic;
 
                 if (!openList.Any(openConn => openConn.Location.Equals(endLoc))) {
-                    openList.Add(endNodeRecord);
+                    openList.Enqueue(endNodeRecord,(int)endNodeRecord.EstimatedTotalCost);
                 }
             }
             //Finished looking at the connections, move it to the closed list.
-            openList.Remove(current);
-            closedList.Add(current);
+            openList.Remove(current,(int)current.EstimatedTotalCost);
+            closedList.Enqueue(current,(int)current.EstimatedTotalCost);
         }
         Debug.Assert(current != null, "current != null");
         if (!current.Location.Equals(_end)) {
@@ -231,6 +231,9 @@ public abstract class PathHeuristic {
 /// and y coordinates and then adding the absolute value of them.
 /// </summary>
 public class ManhattanDistance : PathHeuristic {
+    public ManhattanDistance(Vector2 goalLocation) : base(goalLocation) {
+        
+    }
     public override float Estimate(Vector2 startFrom) {
         return Mathf.Abs(startFrom.x - _goalLocation.x)
                + Mathf.Abs(startFrom.y - _goalLocation.y);

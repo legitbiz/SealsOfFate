@@ -114,7 +114,7 @@ public class Enemy : MovingObject, IAttackable
         */
         var pathFinder = new SearchAStar(GameManager.Instance.LevelScript.CurrentLevel.FeatureMap,
             transform.position, playerObj.transform.position,
-            new ManhattanDistance());
+            new ManhattanDistance(playerObj.transform.position));
         var destination = pathFinder.Search();
         if (destination == null) {
             Debug.Log("Pathfinding: Enemy cannot find valid path to target! " + transform);
