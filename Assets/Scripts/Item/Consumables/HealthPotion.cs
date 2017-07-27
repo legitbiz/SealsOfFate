@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts;
 using UnityEngine;
 
 public class HealthPotion : Consumable { 
@@ -15,7 +16,7 @@ public class HealthPotion : Consumable {
     {
         //Sets the Player's health to 100. This is currently the max, but is hard coded since there was not a
         //Variable which indicates the max health of the player.
-        GameManager.instance.playerHealth = 100;
+        GameManager.Instance.PlayerHealth = 100;
     }
 
 }

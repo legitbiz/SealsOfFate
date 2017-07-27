@@ -20,7 +20,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4334807874380840}
   - component: {fileID: 114590791460387946}
-  - component: {fileID: 114508715870727834}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -41,28 +40,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114508715870727834
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1412084579755790}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c667ac224415024ba59126340f168b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Columns: 8
-  Rows: 8
-  Walls:
-  - {fileID: 1126637172613874, guid: da06bfd96e18e6141bccb22e8f52e66e, type: 2}
-  Floors:
-  - {fileID: 1107012629488888, guid: 4b6ecfed334523d4b80d9a04140b840b, type: 2}
-  Enemies: []
-  Loot: []
-  Doors: []
-  Obstacles:
-  - {fileID: 0}
 --- !u!114 &114590791460387946
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -74,6 +51,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86b9d09d417ff6943ba1fb04e69ead27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxLevel: 15
-  playersTurn: 1
-  playerFoodPoints: 100
+  MaxLevel: 0
+  PlayerHealth: 0
+  PlayersTurn: 1

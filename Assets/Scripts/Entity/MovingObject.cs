@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Assets.Scripts;
 using UnityEngine;
 
 /// <summary>
@@ -109,7 +110,7 @@ public abstract class MovingObject : MonoBehaviour
         // Calculate the remaining distance to move based on the square magnitude of the difference between current position and end parameter. 
         // Square magnitude is used instead of magnitude because it's computationally cheaper.
         var sqrRemainingDistance = (transform.position - end).sqrMagnitude;
-        GameManager.getInstance().IsMoving = true;
+        GameManager.GetInstance().IsMoving = true;
 
         // While that distance is greater than a very small amount (Epsilon, almost zero):
         while (sqrRemainingDistance > float.Epsilon)
@@ -127,7 +128,7 @@ public abstract class MovingObject : MonoBehaviour
             yield return null;
         }
 
-        GameManager.getInstance().IsMoving = false;
+        GameManager.GetInstance().IsMoving = false;
     }
 
     /// <summary>

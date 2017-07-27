@@ -1,4 +1,5 @@
 ﻿using System;
+using Assets.Scripts;
 using Combat;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -39,13 +40,14 @@ public class Player : MovingObject, IAttackable {
     public int WallDamage = 1;
 
     public Player() {
+        
         // TODO populate me
         //_combatData = new CombatData {
         //    HealthPoints = 100,
         //    ManaPoints = 10,
         //    SealieAttack = new AttackInfo(10, DamageType.Blunt, "A vicious nose boop")
         //};
-}
+    }
 
     /// <summary>
     ///     Creates a CombatData object from the player
@@ -56,8 +58,9 @@ public class Player : MovingObject, IAttackable {
     ///     effects/tags. The CombatResult can be extended to include changes to state or long-term effects for the
     ///     player/enemy to suffer.
     /// </remarks>
-    public CombatData ToCombatData() {
-        return _combatData.DeepClone();
+    public TemporaryCombatData ToTemporaryCombatData() {
+        _combatData = GetComponent<CombatData>();
+        return _combatData.ToTemporaryCombatData();
     }
 
     /// <summary>
@@ -65,7 +68,8 @@ public class Player : MovingObject, IAttackable {
     /// </summary>
     /// <param name="defender">The thing that may or may not defend itself</param>
     public void Attack(IAttackable defender) {
-        var damage = CombatData.ComputeDamage(_combatData, defender.ToCombatData());
+        _combatData = GetComponent<CombatData>();
+        var damage = CombatData.ComputeDamage(_combatData.ToTemporaryCombatData(), defender.ToTemporaryCombatData());
         Debug.Log(String.Format("player inflicts {0} damage on penguin", damage.DefenderDamage.HealthDamage));
         defender.TakeDamage(damage.DefenderDamage);
         TakeDamage(damage.AttackerDamage);
@@ -76,8 +80,9 @@ public class Player : MovingObject, IAttackable {
     /// </summary>
     /// <param name="damage">Damage to be dealt</param>
     public void TakeDamage(Damage damage) {
+        _combatData = GetComponent<CombatData>();
         _combatData.HealthPoints -= damage.HealthDamage;
-        GameManager.instance.playerHealth -= damage.HealthDamage;
+        GameManager.Instance.PlayerHealth -= damage.HealthDamage;
 
         _combatData.ManaPoints -= damage.ManaDamage;
 
@@ -93,9 +98,12 @@ public class Player : MovingObject, IAttackable {
     protected override void Start() {
         // Get a component reference to the Player's animator component
         _animator = GetComponent<Animator>();
+        _combatData = GetComponent<CombatData>();
 
-        // Get the current food point total stored in GameManager.instance between levels.
-        _combatData.HealthPoints = GameManager.instance.playerHealth;
+        //// Get the current food point total stored in GameManager.instance between levels.
+        //if (GameManager.Instance.PlayerHealth > 0) {
+        //    _combatData.HealthPoints = GameManager.Instance.PlayerHealth;
+        //} 
 
         // Call the Start function of the MovingObject base class.
         base.Start();
@@ -107,7 +115,8 @@ public class Player : MovingObject, IAttackable {
     /// </summary>
     /// <remarks>Currently only stores the Player's food.</remarks>
     private void OnDisable() {
-        GameManager.instance.playerHealth = _combatData.HealthPoints;
+        _combatData = GetComponent<CombatData>();
+        GameManager.Instance.PlayerHealth = _combatData.HealthPoints;
     }
 
     /// <summary>
@@ -116,7 +125,7 @@ public class Player : MovingObject, IAttackable {
     /// </summary>
     private void Update() {
         //If it's not the player's turn, exit the function.
-        if (!GameManager.instance.playersTurn || GameManager.getInstance().IsMoving) {
+        if (!GameManager.Instance.PlayersTurn || GameManager.GetInstance().IsMoving) {
             return;
         }
 
@@ -168,7 +177,7 @@ public class Player : MovingObject, IAttackable {
         CheckIfGameOver();
 
         // Set the playersTurn boolean of GameManager to false now that players turn is over.
-        GameManager.instance.playersTurn = false;
+        GameManager.Instance.PlayersTurn = false;
     }
 
     /// <summary>
@@ -251,7 +260,7 @@ public class Player : MovingObject, IAttackable {
     private void CheckIfGameOver() {
         // Check if food point total is less than or equal to zero.
         if (_food <= 0) {
-            GameManager.instance.GameOver();
+            GameManager.Instance.GameOver();
         }
     }
 }

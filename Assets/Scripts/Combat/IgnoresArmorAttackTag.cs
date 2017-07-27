@@ -23,7 +23,7 @@ public class IgnoresArmorAttackTag : AttackTag
     /// Set the defender's armor to 0.
     /// </summary>
     /// <param name="cd">The defender's combat data</param>
-    public override void Apply(ref CombatData cd)
+    public override void Apply(ref TemporaryCombatData cd)
     {
         cd.Armor = 0;
     }

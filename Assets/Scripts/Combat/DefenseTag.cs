@@ -7,7 +7,7 @@
         /// Applies the tag to the CombatData
         /// </summary>
         /// <param name="attack">An attack to modify</param>
-        public abstract void Apply(ref CombatData attack);
+        public abstract void Apply(ref TemporaryCombatData attack);
     }
 
     /// <summary>
@@ -18,7 +18,7 @@
         /// Applies the tag to the attack
         /// </summary>
         /// <param name="attack">The attack to be negated by invicibility</param>
-        public override void Apply(ref CombatData attack) {
+        public override void Apply(ref TemporaryCombatData attack) {
             attack.SealieAttack.Damage = 0;
         }
     }

@@ -7,7 +7,7 @@
         /// Convert this thing to a CombatDataa
         /// </summary>
         /// <returns>A CombatData representing a thing</returns>
-        CombatData ToCombatData();
+        TemporaryCombatData ToTemporaryCombatData();
 
         void Attack(IAttackable defender);
         void TakeDamage(Damage damage);

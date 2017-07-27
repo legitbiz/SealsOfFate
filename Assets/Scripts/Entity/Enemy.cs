@@ -1,20 +1,16 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using Assets.Scripts;
 using Combat;
 using UnityEngine;
-using UnityEngine.Assertions.Comparers;
-using Random = UnityEngine.Random;
 
 /// <summary>
 ///     This class is the general enemy class. It extends MovingObject and is expected to be extended by more specific
 ///     classes for particular enemy behavior. It defines general functions that most enemies will need.
 /// </summary>
 public class Enemy : MovingObject, IAttackable {
-    [SerializeField]
-    private CombatData _combatData;
-
     /// <summary> The state machine that handles state transitions. </summary>
     private readonly StateMachine<Enemy> _stateMachine;
+
+    [SerializeField] private CombatData _combatData;
 
     /// <summary> The maximum attack range for an enemy. Enemies will try to stay below this range </summary>
     public int max_range;
@@ -32,15 +28,24 @@ public class Enemy : MovingObject, IAttackable {
 
     /// <summary>The enemy's health points</summary>
     public int Health {
-        get { return _combatData.HealthPoints; }
-        set { _combatData.HealthPoints = value; }
+        get {
+            _combatData = GetComponent<CombatData>();
+            return _combatData.HealthPoints;
+        }
+        set {
+            _combatData = GetComponent<CombatData>();
+            _combatData.HealthPoints = value;
+        }
     }
 
     /// <summary>
     ///     The primary weapon of all enemies is the truth
     /// </summary>
     public AttackInfo Weapon {
-        get { return _combatData.SealieAttack; }
+        get {
+            _combatData = GetComponent<CombatData>();
+            return _combatData.SealieAttack;
+        }
     }
 
     /// <summary>
@@ -51,17 +56,10 @@ public class Enemy : MovingObject, IAttackable {
         get { return _stateMachine; }
     }
 
-    /// <summary>
-    ///     Creates a CombatData object this particular enemy
-    /// </summary>
-    /// <returns>A CombatData representing the enemy</returns>
-    /// <remarks>
-    ///     CombatData's deep clone is used to avoid combat changing actual state through an attacker or defender's
-    ///     effects/tags. The CombatResult can be extended to include changes to state or long-term effects for the
-    ///     player/enemy to suffer.
-    /// </remarks>
-    public CombatData ToCombatData() {
-        return _combatData.DeepClone();
+
+    public TemporaryCombatData ToTemporaryCombatData() {
+        _combatData = GetComponent<CombatData>();
+        return _combatData.ToTemporaryCombatData();
     }
 
     /// <summary>
@@ -70,8 +68,9 @@ public class Enemy : MovingObject, IAttackable {
     /// <param name="defender">The thing that may or may not defend itself</param>
     public void Attack(IAttackable defender) {
         // TODO this code is currently copypasta from the Player. That definitely needs to be changed.
-        var damage = CombatData.ComputeDamage(_combatData, defender.ToCombatData());
-        Debug.Log(String.Format("penguin inflicts {0} damage on player", damage.DefenderDamage.HealthDamage));
+        _combatData = GetComponent<CombatData>();
+        var damage = CombatData.ComputeDamage(_combatData.ToTemporaryCombatData(), defender.ToTemporaryCombatData());
+        Debug.Log(string.Format("penguin inflicts {0} damage on player", damage.DefenderDamage.HealthDamage));
         defender.TakeDamage(damage.DefenderDamage);
         TakeDamage(damage.AttackerDamage);
     }
@@ -94,74 +93,28 @@ public class Enemy : MovingObject, IAttackable {
     ///     Sets up the enemy on load and registers it with the game manager.
     /// </summary>
     private void Awake() {
-        GameManager.instance.RegisterEnemy(this);
+        GameManager.Instance.RegisterEnemy(this);
     }
 
     /// <summary>
     ///     Attempts to move this enemy towards the player.
     /// </summary>
     public void SeekPlayer() {
-        int horizontal, vertical;
-
-        //Find the player
         var playerObj = FindObjectOfType<Player>();
 
-        //Calculate a vector pointing from this enemy to the player
-        Vector2 playerDir = playerObj.transform.position - transform.position;
+        var pathFinder = new SearchAStar(GameManager.Instance.LevelScript.CurrentLevel.FeatureMap,
+            transform.position, playerObj.transform.position,
+            new ManhattanDistance(playerObj.transform.position));
+        var destination = pathFinder.Search();
 
-        //Normalize the vector to a magnitude of 1
-        playerDir.Normalize();
-
-        //***Decompose to pure horizontal and vertical***
-        //Travel in the direction of whichever component is larger. In case of a tie, do a coin flip.
-        float coinFlip;
-        if (Math.Abs(Math.Abs(playerDir.x) - Math.Abs(playerDir.y)) < FloatComparer.kEpsilon) {
-            coinFlip = Random.value;
-            if (coinFlip >= 0.51) //Random.value returns a number between 0.0 and 1.0 inclusively
-            {
-                horizontal = 1;
-                vertical = 0;
-            } else {
-                vertical = 1;
-                horizontal = 0;
-            }
-        } else if (Math.Abs(playerDir.x) > Math.Abs(playerDir.y)) {
-            horizontal = 1;
-            vertical = 0;
-        } else {
-            horizontal = 0;
-            vertical = 1;
+        if (destination == null) {
+            Debug.Log("Pathfinding: Enemy cannot find valid path to target! " + transform);
+            return;
         }
 
-        //If the original vector was negative, flip our movement direction.
-        if (playerDir.x < 0) {
-            horizontal *= -1;
-        }
-        if (playerDir.y < 0) {
-            vertical *= -1;
-        }
+        var direction = destination[0].Destination - (Vector2) transform.position;
 
-        //***Simple and stupid obstacle avoidance***
-        //Raycast in the direction of travel, if it hits a non-player blocking object, randomly generate a new location
-        //to move to. Placeholder for actual pathfinding.
-        RaycastHit2D hit;
-        if (RaycastInDirection(horizontal, vertical, out hit)) {
-            while (RaycastInDirection(horizontal, vertical, out hit) && hit.transform != playerObj.transform) {
-                horizontal = (int) Random.Range(0, 1.99f);
-                if (horizontal == 0) {
-                    vertical = 1;
-                }
-
-                coinFlip = Random.value;
-                if (coinFlip >= 0.51) {
-                    horizontal *= -1;
-                    vertical *= -1;
-                }
-            }
-        }
-
-        //move in the direction given
-        AttemptMove<Component>(horizontal, vertical);
+        AttemptMove<Component>((int) direction.x, (int) direction.y);
     }
 
     protected override void OnCantMove<T>(T component) {
