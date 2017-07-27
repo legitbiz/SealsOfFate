@@ -16,6 +16,7 @@ public class SearchAStar {
     private readonly PathHeuristic _heuristic;
     private readonly int[,] _searchMap;
     private readonly Vector2 _start;
+    private readonly bool _debugMode = true;
 
     /// <summary>
     ///     Ctor for the A* search. It requires a searchMap from the level, a world vector start and end,
@@ -69,6 +70,10 @@ public class SearchAStar {
                 endLoc = new Vector2(con.Destination.x, con.Destination.y);
                 endCost = current.CostSoFar + con.Cost;
 
+                if (_debugMode && con.From != null) {
+                    UnityEngine.Debug.DrawLine(con.From, con.Destination, Color.blue,2,false);
+                }
+
                 //If the node is closed, we may have to skip or remove from the closed list
                 if (closedList.Any(conn => conn.Location.Equals(endLoc))) {
                     endNodeRecord =
@@ -119,6 +124,9 @@ public class SearchAStar {
         var outputList = new List<Edge>(20);
 
         while (!current.Location.Equals(_start)) {
+            if (_debugMode) {
+                UnityEngine.Debug.DrawLine(current.Connection.From, current.Connection.Destination, Color.red, 2, false);
+            }
             outputList.Add(current.Connection);
             current = current.Connection.PreviousRecord;
         }
