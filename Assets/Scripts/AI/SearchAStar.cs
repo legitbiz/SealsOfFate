@@ -70,7 +70,7 @@ public class SearchAStar {
                 endLoc = new Vector2(con.Destination.x, con.Destination.y);
                 endCost = current.CostSoFar + con.Cost;
 
-                if (_debugMode && con.From != null) {
+                if (_debugMode && con.From != Vector2.zero) {
                     UnityEngine.Debug.DrawLine(con.From, con.Destination, Color.blue,2,false);
                 }
 
