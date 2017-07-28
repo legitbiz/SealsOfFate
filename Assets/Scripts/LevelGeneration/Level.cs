@@ -135,24 +135,28 @@ namespace Assets.Scripts.LevelGeneration {
             while(toDecorate.Count > 0){
                 var selectedChunk = toDecorate[Random.Range(0,toDecorate.Count)];
                 toDecorate.Remove(selectedChunk);
+                var decorations = Random.Range(0,(chunkSize*chunkSize)/4);
 
                 for(var x = 0; x < chunkSize; ++x){
                     for(var y = 0; y < chunkSize; ++y){
                         var roll = Random.Range(0f,1f);
-                        if(roll >=.75 && numEnemies >0){
+                        if(roll >=.75 && numEnemies >0 && decorations > 0){
                                 FeatureMap[(int)selectedChunk.x * chunkSize + x, (int)selectedChunk.y * chunkSize + y] =
                                     (int) LevelDecoration.Enemy;
                                 --numEnemies;
+                                --decorations;
                         }
-                        else if(roll >=.50 && numObstacles > 0){
+                        else if(roll >=.50 && numObstacles > 0 && decorations > 0){
                                 FeatureMap[(int)selectedChunk.x * chunkSize + x, (int)selectedChunk.y * chunkSize + y] =
                                     (int) LevelDecoration.Wall;
-                                --numObstacles;
+                                    --numObstacles;
+                                    --decorations;
                         }
-                        else if(roll >=.25 && numLoot > 0){
+                        else if(roll >=.25 && numLoot >0 && decorations >0){
                                 FeatureMap[(int)selectedChunk.x * chunkSize + x, (int)selectedChunk.y * chunkSize + y] =
                                     (int) LevelDecoration.Loot;
                                 --numLoot;
+                                --decorations;
                         }
                     }
                 }
