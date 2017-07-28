@@ -1,4 +1,4 @@
-﻿namespace Assets.Scripts.Entity {
+﻿namespace Combat {
     /// <summary>
     /// Abstract base class for Attack Effects
     /// </summary>
@@ -13,7 +13,7 @@
     /// <summary>
     /// Sample implementation for AttackEffect of an Unblockable Attack
     /// </summary>
-    internal class Unblockable : AttackEffect {
+    public class Unblockable : AttackEffect {
         /// <summary>
         /// Applies the unblockable modifier to this attack - removes the defender's Blocking modifier.
         /// </summary>

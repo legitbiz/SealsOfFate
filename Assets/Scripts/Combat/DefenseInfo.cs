@@ -1,8 +1,11 @@
-﻿namespace Assets.Scripts.Entity {
+﻿using System;
+
+namespace Combat {
     /// <summary>
     ///     Information about defense
     /// </summary>
-    public class DefenseInfo {
+    [Serializable]
+    public class DefenseInfo : UnityEngine.Object {
         private const int MaxDamageMitigation = 100;
         private byte _damageMitigation;
 

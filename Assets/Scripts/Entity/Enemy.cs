@@ -1,130 +1,127 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Assets.Scripts;
-using Assets.Scripts.Entity;
+﻿using Assets.Scripts;
+using Combat;
 using UnityEngine;
-using UnityEngine.Assertions.Comparers;
 
 /// <summary>
-/// This class is the general enemy class. It extends MovingObject and is expected to be extended by more specific
-/// classes for particular enemy behavior. It defines general functions that most enemies will need.
+///     This class is the general enemy class. It extends MovingObject and is expected to be extended by more specific
+///     classes for particular enemy behavior. It defines general functions that most enemies will need.
 /// </summary>
-public class Enemy : MovingObject, IAttackable
-{
-    /// <summary>The normal movement speed of the enemy</summary>
-    public int speed;
-    /// <summary> The minimum attack range for an enemy. Enemies will try to stay above this range</summary>
-    public int min_range;
+public class Enemy : MovingObject, IAttackable {
+    /// <summary> The state machine that handles state transitions. </summary>
+    private readonly StateMachine<Enemy> _stateMachine;
+
+    [SerializeField] private CombatData _combatData;
+
     /// <summary> The maximum attack range for an enemy. Enemies will try to stay below this range </summary>
     public int max_range;
-    /// <summary>The enemy's health points</summary>
-    public int Health { get; set; }
 
-    /// <summary>
-    /// The primary weapon of all enemies is the truth
-    /// </summary>
-    public AttackInfo Weapon = new AttackInfo(5, DamageType.Blunt, "A hard truth, told cruelly");
+    /// <summary> The minimum attack range for an enemy. Enemies will try to stay above this range</summary>
+    public int min_range;
 
-    /// <summary> The state machine that handles state transitions. </summary>
-    private StateMachine<Enemy> _stateMachine;
+    /// <summary>The normal movement speed of the enemy</summary>
+    public int speed;
 
-    Enemy() : base()
-    {
+    private Enemy() {
         _stateMachine = new StateMachine<Enemy>(this);
         _stateMachine.CurrentState = StateAlert.getInstance();
     }
 
+    /// <summary>The enemy's health points</summary>
+    public int Health {
+        get {
+            _combatData = GetComponent<CombatData>();
+            return _combatData.HealthPoints;
+        }
+        set {
+            _combatData = GetComponent<CombatData>();
+            _combatData.HealthPoints = value;
+        }
+    }
+
     /// <summary>
-    /// Sets up the enemy on load and registers it with the game manager.
+    ///     The primary weapon of all enemies is the truth
     /// </summary>
-    void Awake()
-    {
+    public AttackInfo Weapon {
+        get {
+            _combatData = GetComponent<CombatData>();
+            return _combatData.SealieAttack;
+        }
+    }
+
+    /// <summary>
+    ///     Returns the state machine instance
+    /// </summary>
+    /// <returns>The State Machine</returns>
+    public StateMachine<Enemy> StateMachine {
+        get { return _stateMachine; }
+    }
+
+
+    public TemporaryCombatData ToTemporaryCombatData() {
+        _combatData = GetComponent<CombatData>();
+        return _combatData.ToTemporaryCombatData();
+    }
+
+    /// <summary>
+    ///     Attack something
+    /// </summary>
+    /// <param name="defender">The thing that may or may not defend itself</param>
+    public void Attack(IAttackable defender) {
+        // TODO this code is currently copypasta from the Player. That definitely needs to be changed.
+        _combatData = GetComponent<CombatData>();
+        var damage = CombatData.ComputeDamage(_combatData.ToTemporaryCombatData(), defender.ToTemporaryCombatData());
+        Debug.Log(string.Format("penguin inflicts {0} damage on player", damage.DefenderDamage.HealthDamage));
+        defender.TakeDamage(damage.DefenderDamage);
+        TakeDamage(damage.AttackerDamage);
+    }
+
+    /// <summary>
+    ///     Oh noes! I have been hit.
+    /// </summary>
+    /// <param name="damage">Damage to be dealt</param>
+    public void TakeDamage(Damage damage) {
+        // TODO this code is currently copypasta from the Player. That definitely needs to be changed.
+        _combatData.HealthPoints -= damage.HealthDamage;
+        _combatData.ManaPoints -= damage.ManaDamage;
+
+        if (_combatData.HealthPoints <= 0) {
+            Debug.Log("In theory, this penguin is dead");
+        }
+    }
+
+    /// <summary>
+    ///     Sets up the enemy on load and registers it with the game manager.
+    /// </summary>
+    private void Awake() {
         GameManager.Instance.RegisterEnemy(this);
     }
 
     /// <summary>
-    /// Returns the state machine instance
+    ///     Attempts to move this enemy towards the player.
     /// </summary>
-    /// <returns></returns>
-    public StateMachine<Enemy> StateMachine
-    {
-        get
-        {
-            return _stateMachine;
+    public void SeekPlayer() {
+        var playerObj = FindObjectOfType<Player>();
+
+        var pathFinder = new SearchAStar(GameManager.Instance.LevelScript.CurrentLevel.FeatureMap,
+            transform.position, playerObj.transform.position,
+            new ManhattanDistance(playerObj.transform.position));
+        var destination = pathFinder.Search();
+
+        if (destination == null) {
+            Debug.Log("Pathfinding: Enemy cannot find valid path to target! " + transform);
+            return;
         }
+
+        var direction = destination[0].Destination - (Vector2) transform.position;
+
+        AttemptMove<Component>((int) direction.x, (int) direction.y);
     }
 
-    /// <summary>
-    /// Attempts to move this enemy towards the player. 
-    /// </summary>
-    public void SeekPlayer()
-    {
-        int horizontal, vertical;
-
-        //Find the player
-        Player playerObj = GameObject.FindObjectOfType<Player>();
-
-        //Calculate a vector pointing from this enemy to the player
-        Vector2 playerDir =  playerObj.transform.position - transform.position;
-
-        //Normalize the vector to a magnitude of 1
-        playerDir.Normalize();
-
-        //***Decompose to pure horizontal and vertical***
-        //Travel in the direction of whichever component is larger. In case of a tie, do a coin flip.
-        float coinFlip;
-        if (Math.Abs(Math.Abs(playerDir.x) - Math.Abs(playerDir.y)) < FloatComparer.kEpsilon) {
-            coinFlip = UnityEngine.Random.value;
-            if (coinFlip >=0.51) //Random.value returns a number between 0.0 and 1.0 inclusively
-            {
-                horizontal = 1;
-                vertical = 0;
-            }
-            else
-            {
-                vertical = 1;
-                horizontal = 0;
-            }
-        }
-        else if (Math.Abs(playerDir.x) > Math.Abs(playerDir.y)) { horizontal = 1; vertical = 0; }
-        else { horizontal = 0; vertical = 1; }
-
-        //If the original vector was negative, flip our movement direction.
-        if (playerDir.x <0) { horizontal *= -1;  }
-        if (playerDir.y < 0 ) { vertical *= -1; }
-
-        //***Simple and stupid obstacle avoidance***
-        //Raycast in the direction of travel, if it hits a non-player blocking object, randomly generate a new location
-        //to move to. Placeholder for actual pathfinding.
-        RaycastHit2D hit;
-        if (RaycastInDirection(horizontal,vertical,out hit))
-        {
-
-            while (RaycastInDirection(horizontal, vertical, out hit) && hit.transform != playerObj.transform)
-            {
-                horizontal = (int)(UnityEngine.Random.Range(0, 1.99f));
-                if (horizontal == 0) { vertical = 1; }
-
-                coinFlip = UnityEngine.Random.value;
-                if (coinFlip >= 0.51) { horizontal *= -1; vertical *= -1; }
-            }
-        }
-
-        //move in the direction given
-        AttemptMove<Component>(horizontal,vertical);
-    }
-
-    protected override void OnCantMove<T>(T component)
-    {
-        if (component.tag == "Player") {
+    protected override void OnCantMove<T>(T component) {
+        if (component.CompareTag("Player")) {
             Debug.Log("Penguin attacks player");
+            var player = FindObjectOfType<Player>();
+            Attack(player);
         }
-        return;
-    }
-
-    public CombatData ToCombatData()
-    {
-        throw new NotImplementedException();
     }
 }

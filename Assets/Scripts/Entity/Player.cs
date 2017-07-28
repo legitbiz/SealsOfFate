@@ -1,5 +1,6 @@
-﻿using Assets.Scripts;
-using Assets.Scripts.Entity;
+﻿using System;
+using Assets.Scripts;
+using Combat;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,13 +8,24 @@ using UnityEngine.SceneManagement;
 ///     This class contains logic for processing player input and interacting with other relevant
 ///     GameObjects in the generated scene.
 /// </summary>
-public class Player : MovingObject, IAttackable
-{
+public class Player : MovingObject, IAttackable {
+    
+
     /// <summary>Stores a reference to the Player's animator component.</summary>
     private Animator _animator;
 
+    /// <summary>
+    ///     Data about the player for combat purposes
+    /// </summary>
+    // TODO Create a default player CombatData to initialize during game start
+    [SerializeField]
+    private CombatData _combatData;
+
     /// <summary>Stores the Player's current food points during the level.</summary>
     private int _food;
+
+    /// <summary>Stores the Player's Movement Speed.</summary>
+    private ushort _movementSpeed;
 
     /// <summary>Number of points to add to player food resource when picking up a food object.</summary>
     public int PointsPerFood = 10;
@@ -27,35 +39,58 @@ public class Player : MovingObject, IAttackable
     /// <summary>How much damage the Player inflicts to the Wall object when it attacks.</summary>
     public int WallDamage = 1;
 
-    //// Stat Block 
-    /// TODO: Connect this stat block to their appropriate functionality.
-    /// <summary>Stores the Player's Health.</summary>
-    private ushort _healthPoints;
-    
-    /// <summary>Stores the Player's Mana.</summary>
-    private ushort _manaPoints;
-    
-    /// <summary>Stores the Player's Damage Reduction (percent value).</summary>
-    private byte _damageReduction;
-    
-    /// <summary>Stores the Player's Movement Speed.</summary>
-    private ushort _movementSpeed;
-    
-    /// <summary>Stores the Player's evasion (percent value).</summary>
-    private byte _evasion;
-    
-    /// <summary>Stores the Player's Physical Damage stat.</summary>
-    private ushort _sealie;
-    
-    /// <summary>Stores the Player's Magic Damage stat.</summary>
-    private ushort _unsealie;
-
-
+    public Player() {
+        
+        // TODO populate me
+        //_combatData = new CombatData {
+        //    HealthPoints = 100,
+        //    ManaPoints = 10,
+        //    SealieAttack = new AttackInfo(10, DamageType.Blunt, "A vicious nose boop")
+        //};
+    }
 
     /// <summary>
-    /// The primary weapon of the seal: a vicious nose boop
+    ///     Creates a CombatData object from the player
     /// </summary>
-    public AttackInfo Weapon = new AttackInfo(10, DamageType.Blunt, "Vicious nose boop");
+    /// <returns>A CombatData representing the player</returns>
+    /// <remarks>
+    ///     CombatData's deep clone is used to avoid combat changing actual state through an attacker or defender's
+    ///     effects/tags. The CombatResult can be extended to include changes to state or long-term effects for the
+    ///     player/enemy to suffer.
+    /// </remarks>
+    public TemporaryCombatData ToTemporaryCombatData() {
+        _combatData = GetComponent<CombatData>();
+        return _combatData.ToTemporaryCombatData();
+    }
+
+    /// <summary>
+    ///     Attack something
+    /// </summary>
+    /// <param name="defender">The thing that may or may not defend itself</param>
+    public void Attack(IAttackable defender) {
+        _combatData = GetComponent<CombatData>();
+        var damage = CombatData.ComputeDamage(_combatData.ToTemporaryCombatData(), defender.ToTemporaryCombatData());
+        Debug.Log(String.Format("player inflicts {0} damage on penguin", damage.DefenderDamage.HealthDamage));
+        defender.TakeDamage(damage.DefenderDamage);
+        TakeDamage(damage.AttackerDamage);
+    }
+
+    /// <summary>
+    ///     Oh noes! I have been hit.
+    /// </summary>
+    /// <param name="damage">Damage to be dealt</param>
+    public void TakeDamage(Damage damage) {
+        _combatData = GetComponent<CombatData>();
+        _combatData.HealthPoints -= damage.HealthDamage;
+        GameManager.Instance.PlayerHealth -= damage.HealthDamage;
+
+        _combatData.ManaPoints -= damage.ManaDamage;
+
+        if (_combatData.HealthPoints <= 0)
+        {
+            Debug.Log("In theory, this penguin is dead");
+        }
+    }
 
     /// <summary>
     ///     Configures the Player state on entry to the scene.
@@ -63,9 +98,12 @@ public class Player : MovingObject, IAttackable
     protected override void Start() {
         // Get a component reference to the Player's animator component
         _animator = GetComponent<Animator>();
+        _combatData = GetComponent<CombatData>();
 
-        // Get the current food point total stored in GameManager.instance between levels.
-        _food = GameManager.Instance.PlayerHealth;
+        //// Get the current food point total stored in GameManager.instance between levels.
+        //if (GameManager.Instance.PlayerHealth > 0) {
+        //    _combatData.HealthPoints = GameManager.Instance.PlayerHealth;
+        //} 
 
         // Call the Start function of the MovingObject base class.
         base.Start();
@@ -77,7 +115,8 @@ public class Player : MovingObject, IAttackable
     /// </summary>
     /// <remarks>Currently only stores the Player's food.</remarks>
     private void OnDisable() {
-        GameManager.Instance.PlayerHealth = _food;
+        _combatData = GetComponent<CombatData>();
+        GameManager.Instance.PlayerHealth = _combatData.HealthPoints;
     }
 
     /// <summary>
@@ -148,8 +187,10 @@ public class Player : MovingObject, IAttackable
     /// </summary>
     /// <param name="component">An interactable entity, such as a wall or an enemy.</param>
     protected override void OnCantMove<T>(T component) {
-        if (component.tag == "Enemy") {
+        if (component.CompareTag("Enemy")) {
             Debug.Log("Player attacks penguin");
+            var enemy = component.gameObject.GetComponent<Enemy>();
+            Attack(enemy);
         }
     }
 
@@ -221,10 +262,5 @@ public class Player : MovingObject, IAttackable
         if (_food <= 0) {
             GameManager.Instance.GameOver();
         }
-    }
-
-    public CombatData ToCombatData()
-    {
-        throw new System.NotImplementedException();
     }
 }

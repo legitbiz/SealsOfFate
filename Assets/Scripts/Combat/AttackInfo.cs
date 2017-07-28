@@ -1,4 +1,7 @@
-﻿namespace Assets.Scripts.Entity {
+﻿using System;
+using UnityEngine;
+
+namespace Combat {
     public enum DamageType {
         Blunt,
         Slashing,
@@ -7,9 +10,10 @@
         Cold
     }
 
+    [Serializable]
     public class AttackInfo {
         /// <summary>
-        ///     Creates a new AttackInfo
+        ///     Creates a new SealieAttack
         /// </summary>
         /// <param name="damage">The amount of pain to inflict</param>
         /// <param name="damageType">The manner in which it is inflicted</param>
@@ -21,18 +25,18 @@
         }
 
         /// <summary>
-        ///     The damage done by this AttackInfo
+        ///     The damage done by this SealieAttack
         /// </summary>
-        public int Damage { get; set; }
+        public int Damage;
 
         /// <summary>
-        ///     The type of damage done by this AttackInfo
+        ///     The type of damage done by this SealieAttack
         /// </summary>
-        public DamageType DamageType { get; set; }
+        public DamageType DamageType;
 
         /// <summary>
-        ///     A description of the AttackInfo (e.g. sword, tentacle, burning fart)
+        ///     A description of the SealieAttack (e.g. sword, tentacle, burning fart)
         /// </summary>
-        public string Description { get; set; }
+        public string Description;
     }
 }

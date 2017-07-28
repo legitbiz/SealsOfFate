@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 61651863353038018}
   - component: {fileID: 95572330710232968}
   - component: {fileID: 114061717239179980}
+  - component: {fileID: 114238090809140922}
   m_Layer: 9
   m_Name: Enemy
   m_TagString: Enemy
@@ -121,9 +122,39 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   MoveTime: 0.075
-  speed: 1
-  min_range: 0
+  _combatData: {fileID: 0}
   max_range: 1
+  min_range: 0
+  speed: 1
+--- !u!114 &114238090809140922
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1855614962614306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2623c5733294db892209dd6b492116b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _attackTags: []
+  _defenseEffects: []
+  _defenseTags: []
+  Armor: 0
+  Evasion: 0
+  HealthPoints: 50
+  ManaPoints: 0
+  SealieAttack:
+    Damage: 10
+    DamageType: 0
+    Description: The Truth
+  UnsealieAttack:
+    Damage: 20
+    DamageType: 2
+    Description: Lies
+  DefenseInfo: {fileID: 0}
+  DamageReduction: 0
+  Blocking: 0
 --- !u!212 &212193571088210470
 SpriteRenderer:
   m_ObjectHideFlags: 1
