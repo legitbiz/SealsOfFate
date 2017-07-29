@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using Assets.Scripts.LevelGeneration;
 using Assets.Scripts.Utility;
 using UnityEngine;
+using UnityEngine.Assertions;
 using Debug = System.Diagnostics.Debug;
 
 //Copyright 2017 Legit Buisness, LLC, Andrew Waugh
@@ -52,8 +54,19 @@ public class SearchAStar {
         openList.Enqueue(startRecord,(int)startRecord.EstimatedTotalCost);
 
         NodeRecord current = null;
+        Assert.raiseExceptions = true;
         while (openList.Count > 0) {
+            Assert.IsFalse(openList.Count > 50000,"OpenList has an insane number of nodes");
             current = openList.Peek();
+
+            if (openList.Count % 1000 == 0) {
+                UnityEngine.Debug.LogWarning("<i>Pathfinding:</i> There are too many nodes in the open list. >" + openList.Count);
+                //openList.LogContents();
+            }
+            if (closedList.Count > 0 && closedList.Count % 1000 == 0) { 
+                UnityEngine.Debug.LogWarning("<i>Pathfinding:</i> There are too many nodes in the closed list. >" + closedList.Count);
+                //closedList.LogContents();
+            }
 
             //If we're at the goal, end early
             if (current.Location.Equals(_end)) {
@@ -67,17 +80,20 @@ public class SearchAStar {
             float endCost;
             float endHeuristic;
             foreach (var con in connections) {
-                endLoc = new Vector2(con.Destination.x, con.Destination.y);
+                endLoc = con.Destination;
                 endCost = current.CostSoFar + con.Cost;
 
-                if (_debugMode && con.From != Vector2.zero) {
+                if (_debugMode) {
                     UnityEngine.Debug.DrawLine(con.From, con.Destination, Color.blue,2,false);
                 }
 
                 //If the node is closed, we may have to skip or remove from the closed list
-                if (closedList.Any(conn => conn.Location.Equals(endLoc))) {
+                if (closedList.Any(closedRecord => closedRecord.Location == endLoc)) {
+                    Assert.IsNotNull(closedList,"Closed List should not be null.");
+                    Assert.IsFalse(closedList.Count == 0,"Closed List should not be empty");
+                    //TODO: This line occasionally crashes. Fix it.
                     endNodeRecord =
-                        closedList.Single(locRec => locRec.Location.Equals(endLoc)); //Retrieve the record we found
+                        closedList.First(closedRecord => closedRecord.Location.Equals(endLoc)); //Retrieve the record we found
                     if (endNodeRecord.CostSoFar <= endCost) {
                         //If this route isn't shorter, then skip.
                         continue;
@@ -87,9 +103,9 @@ public class SearchAStar {
                     //Recalculate the heuristic. TODO: recalculate using old values
                     endHeuristic = _heuristic.Estimate(endLoc);
                 }
-                else if (openList.Any(conn => conn.Location.Equals(endLoc))) {
+                else if (openList.Any(openRecord => openRecord.Location == endLoc)) {
                     //Skip if the node is open and we haven't found a better route
-                    endNodeRecord = openList.Single(locRec => locRec.Location.Equals(endLoc));
+                    endNodeRecord = openList.First(openRecord => openRecord.Location == endLoc);
 
                     if (endNodeRecord.CostSoFar <= endCost) {
                         continue;
@@ -107,28 +123,38 @@ public class SearchAStar {
                 endNodeRecord.Connection = con; //remember: we're iterating through the connections right now
                 endNodeRecord.EstimatedTotalCost = endCost + endHeuristic;
 
-                if (!openList.Any(openConn => openConn.Location.Equals(endLoc))) {
-                    openList.Enqueue(endNodeRecord,(int)endNodeRecord.EstimatedTotalCost);
+                //If this record isn't in the openlist already
+                if (openList.All(openRecord => openRecord.Location != endLoc)) {
+                    openList.Enqueue(endNodeRecord, (int) endNodeRecord.EstimatedTotalCost);
                 }
             }
             //Finished looking at the connections, move it to the closed list.
             openList.Remove(current,(int)current.EstimatedTotalCost);
             closedList.Enqueue(current,(int)current.EstimatedTotalCost);
         }
-        Debug.Assert(current != null, "current != null");
-        if (!current.Location.Equals(_end)) {
+        Assert.IsNotNull(current, "current != null");
+        if (current.Location != _end) {
             //We're out of nodes and haven't found the goal. No solution.
+            UnityEngine.Debug.DrawLine(current.Location,_end,Color.black,300f);
+            return null;
+        }
+        if ((current.Location - _end).sqrMagnitude > 1000) {
+            //We are very far away from the destination. It's likely we won't be able to reach it.
+            //Let's not waste performance.
+            UnityEngine.Debug.DrawLine(current.Location,_end,Color.gray,300f);
+            UnityEngine.Debug.Log("<i>Pathfinding:</i> Pathfinding has reached a node that is too far away. Aborting. Distance: " + (current.Location - _end).magnitude);
             return null;
         }
         //We found the path, time to compile a list of connections
         var outputList = new List<Edge>(20);
 
-        while (!current.Location.Equals(_start)) {
+        while (current.Location != _start) {
             if (_debugMode) {
                 UnityEngine.Debug.DrawLine(current.Connection.From, current.Connection.Destination, Color.red, 2, false);
             }
             outputList.Add(current.Connection);
             current = current.Connection.PreviousRecord;
+            Assert.IsFalse(outputList.Count > 1000,"Output list is way too long!");
         }
         outputList.Reverse();
         return outputList;
@@ -174,6 +200,10 @@ public class SearchAStar {
         public float EstimatedTotalCost;
         /// <summary>The world location of this node</summary>
         public Vector2 Location;
+
+        public override string ToString() {
+            return "Node At " + Location + "Estimated/Measured cost" + EstimatedTotalCost + "/" + CostSoFar;
+        }
     }
 
     /// <summary>
