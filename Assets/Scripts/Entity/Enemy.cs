@@ -107,8 +107,9 @@ public class Enemy : MovingObject, IAttackable {
     public void SeekPlayer() {
         var playerObj = FindObjectOfType<Player>();
 
-        var pathFinder = new SearchAStar(GameManager.Instance.LevelScript.CurrentLevel.FeatureMap,
-            transform.position, playerObj.transform.position,
+        var pathFinder = new SearchAStar(GameManager.CurrentLevelFeatureMap,
+            transform.position,
+            playerObj.transform.position,
             new ManhattanDistance(playerObj.transform.position));
         var destination = pathFinder.Search();
 
@@ -123,7 +124,7 @@ public class Enemy : MovingObject, IAttackable {
     }
 
     /// <summary>
-    ///     If this enemy can't move, see if the reason it can't move is because of the player. 
+    ///     If this enemy can't move, see if the reason it can't move is because of the player.
     /// </summary>
     /// <typeparam name="T">The type of the component</typeparam>
     /// <param name="component">The component</param>

@@ -56,10 +56,15 @@ namespace Assets.Scripts {
             InitLevel();
         }
 
-        /// <summary> 
-        ///     Handles returning the game control to player and running other entities
-        /// </summary>
-        private void Update() {
+        /// <summary>Get the CurrentLevelFeatureMap</summary>
+        internal static int[,] CurrentLevelFeatureMap {
+            get { return Instance.LevelScript.CurrentLevel.FeatureMap; }
+        }
+
+/// <summary> 
+///     Handles returning the game control to player and running other entities
+/// </summary>
+private void Update() {
             // Bail if this is the player's turn
             if (PlayersTurn) {
                 return;
