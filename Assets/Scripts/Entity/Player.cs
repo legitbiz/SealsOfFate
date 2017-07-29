@@ -89,6 +89,9 @@ public class Player : MovingObject, IAttackable {
         if (_combatData.HealthPoints <= 0)
         {
             Debug.Log("In theory, this penguin is dead");
+            Destroy(gameObject);
+            // TODO Trigger game over animation
+            throw new Exception("Holy cats, you're dead!");
         }
     }
 

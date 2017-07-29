@@ -86,6 +86,8 @@ public class Enemy : MovingObject, IAttackable {
 
         if (_combatData.HealthPoints <= 0) {
             Debug.Log("In theory, this penguin is dead");
+            // TODO Add a death animation
+            Destroy(gameObject);
         }
     }
 
