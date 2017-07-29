@@ -13,20 +13,22 @@ public class Enemy : MovingObject, IAttackable {
     [SerializeField] private CombatData _combatData;
 
     /// <summary> The maximum attack range for an enemy. Enemies will try to stay below this range </summary>
-    public int max_range;
+    public int MaxRange;
 
     /// <summary> The minimum attack range for an enemy. Enemies will try to stay above this range</summary>
-    public int min_range;
+    public int MinRange;
 
     /// <summary>The normal movement speed of the enemy</summary>
-    public int speed;
+    public int Speed;
 
     private Enemy() {
         _stateMachine = new StateMachine<Enemy>(this);
         _stateMachine.CurrentState = StateAlert.getInstance();
     }
 
-    /// <summary>The enemy's health points</summary>
+    /// <summary>
+    ///     The enemy's health points
+    /// </summary>
     public int Health {
         get {
             _combatData = GetComponent<CombatData>();
@@ -56,7 +58,10 @@ public class Enemy : MovingObject, IAttackable {
         get { return _stateMachine; }
     }
 
-
+    /// <summary>
+    ///     Convert the enemy to a TemporaryCombatData object for damage resolution
+    /// </summary>
+    /// <returns>A TemporaryCombatData object</returns>
     public TemporaryCombatData ToTemporaryCombatData() {
         _combatData = GetComponent<CombatData>();
         return _combatData.ToTemporaryCombatData();
@@ -117,11 +122,24 @@ public class Enemy : MovingObject, IAttackable {
         AttemptMove<Component>((int) direction.x, (int) direction.y);
     }
 
+    /// <summary>
+    ///     If this enemy can't move, see if the reason it can't move is because of the player. 
+    /// </summary>
+    /// <typeparam name="T">The type of the component</typeparam>
+    /// <param name="component">The component</param>
     protected override void OnCantMove<T>(T component) {
         if (component.CompareTag("Player")) {
             Debug.Log("Penguin attacks player");
             var player = FindObjectOfType<Player>();
             Attack(player);
         }
+    }
+
+    /// <summary>
+    ///     Checks if the enemy is asleep
+    /// </summary>
+    /// <returns>True if asleep, false otherwise.</returns>
+    public bool IsAsleep() {
+        return StateMachine.IsInState(StateAsleep.getInstance());
     }
 }
