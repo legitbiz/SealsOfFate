@@ -25,7 +25,7 @@ public class SearchAStar {
     ///     Ctor for the A* search. It requires a searchMap from the level, a world vector start and end,
     ///     and a heuristic strategy object.
     /// </summary>
-    /// <param name="searchMap">A featuremap from the LevelManager</param>
+    /// <param name="seeker">The entity looking for the path</param>
     /// <param name="start">A vector2 to the starting location. Must be in worldspace</param>
     /// <param name="end">A vector2 to the ending location. Must be in worldspace</param>
     /// <param name="heuristic">A heurstic strategy object</param>
@@ -165,17 +165,16 @@ public class SearchAStar {
     /// <summary>
     /// Generates a list of edges connected to a location given in a tile record.
     /// </summary>
-    /// <param name="tileRecord"></param>
+    /// <param name="tileRecord">The location record to get connections from</param>
     /// <returns>A list of at most 4 edges connected to this tile record.</returns>
     private List<Edge> GetConnections(NodeRecord tileRecord) {
         var worldCoordinate = tileRecord.Location;
-        var worldX = (int) Mathf.Floor(worldCoordinate.x);
-        var worldY = (int) Mathf.Floor(worldCoordinate.y);
         var retList = new List<Edge>(4);
         var blockingLayer = LayerMask.GetMask("Blocking");
         _seeker.GetComponent<BoxCollider2D>().enabled = false;
 
         //TODO: Optimize: reduce the number of new vector2s created
+        //TODO: Generalize the collision exceptions
         for (int x = -1; x <= 1; ++x) {
             for (int y = -1; y <= 1; ++y) {
                 if ((x != 0 && y != 0) || (x == 0 && y == 0)) {
@@ -190,21 +189,6 @@ public class SearchAStar {
             }
         }
         _seeker.GetComponent<BoxCollider2D>().enabled = true;
-        /*
-        if (!Physics2D.Linecast(worldCoordinate,new Vector2(worldCoordinate.x+1,worldCoordinate.y),blockingLayer)) {
-            retList.Add(new Edge(worldCoordinate, new Vector2(worldCoordinate.x+1,worldCoordinate.y), tileRecord));
-        }
-        if (!Physics2D.Linecast(worldCoordinate, new Vector2(worldCoordinate.x - 1, worldCoordinate.y),blockingLayer)) {
-            retList.Add(new Edge(worldCoordinate, new Vector2(worldCoordinate.x - 1, worldCoordinate.y), tileRecord));
-        }
-        if (!Physics2D.Linecast(worldCoordinate, new Vector2(worldCoordinate.x, worldCoordinate.y+1),blockingLayer)) {
-            retList.Add(new Edge(worldCoordinate, new Vector2(worldCoordinate.x, worldCoordinate.y+1), tileRecord));
-        }
-        if (!Physics2D.Linecast(worldCoordinate, new Vector2(worldCoordinate.x, worldCoordinate.y-1),blockingLayer))
-        {
-            retList.Add(new Edge(worldCoordinate, new Vector2(worldCoordinate.x, worldCoordinate.y-1), tileRecord));
-        }
-        */
         return retList;
     }
 
