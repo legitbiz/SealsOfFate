@@ -145,4 +145,11 @@ public class Enemy : MovingObject, IAttackable {
     public bool IsAsleep() {
         return StateMachine.IsInState(StateAsleep.getInstance());
     }
+
+    /// <summary>
+    ///     Sleepy sleepy, my foe
+    /// </summary>
+    public void GoToSleep() {
+        StateMachine.ChangeState(StateAsleep.getInstance());
+    }
 }

@@ -101,8 +101,8 @@ private void Update() {
                     var enemy = (Enemy) _entitiesToMove[_enemyTurn];
                     var distanceFromPlayer = DistanceFromPlayer(enemy);
 
-                    if (distanceFromPlayer >= MinimumDistanceFromPlayer) {
-                        enemy.StateMachine.ChangeState(StateAsleep.getInstance());
+                    if (distanceFromPlayer >= MinimumDistanceFromPlayer && !enemy.IsAsleep()) {
+                        enemy.GoToSleep();
                     } else if (distanceFromPlayer < MinimumDistanceFromPlayer && enemy.IsAsleep()) {
                         enemy.StateMachine.RevertState();
                     }
