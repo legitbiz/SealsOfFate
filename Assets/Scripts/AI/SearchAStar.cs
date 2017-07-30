@@ -91,7 +91,6 @@ public class SearchAStar {
                 if (closedList.Any(closedRecord => closedRecord.Location == endLoc)) {
                     Assert.IsNotNull(closedList,"Closed List should not be null.");
                     Assert.IsFalse(closedList.Count == 0,"Closed List should not be empty");
-                    //TODO: This line occasionally crashes. Fix it.
                     endNodeRecord =
                         closedList.First(closedRecord => closedRecord.Location.Equals(endLoc)); //Retrieve the record we found
                     if (endNodeRecord.CostSoFar <= endCost) {
@@ -138,10 +137,10 @@ public class SearchAStar {
             UnityEngine.Debug.DrawLine(current.Location,_end,Color.black,300f);
             return null;
         }
-        if ((current.Location - _end).sqrMagnitude > 1000) {
+        if ((current.Location - _end).sqrMagnitude > 500) {
             //We are very far away from the destination. It's likely we won't be able to reach it.
             //Let's not waste performance.
-            UnityEngine.Debug.DrawLine(current.Location,_end,Color.gray,300f);
+            UnityEngine.Debug.DrawLine(_start,_end,Color.gray,300f);
             UnityEngine.Debug.Log("<i>Pathfinding:</i> Pathfinding has reached a node that is too far away. Aborting. Distance: " + (current.Location - _end).magnitude);
             return null;
         }
@@ -154,7 +153,6 @@ public class SearchAStar {
             }
             outputList.Add(current.Connection);
             current = current.Connection.PreviousRecord;
-            Assert.IsFalse(outputList.Count > 1000,"Output list is way too long!");
         }
         outputList.Reverse();
         return outputList;
