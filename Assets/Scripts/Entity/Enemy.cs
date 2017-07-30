@@ -105,9 +105,7 @@ public class Enemy : MovingObject, IAttackable {
     /// </summary>
     public void SeekPlayer() {
         var playerObj = FindObjectOfType<Player>();
-
-        var pathFinder = new SearchAStar(GameManager.Instance.LevelScript.CurrentLevel.FeatureMap,
-            transform.position, playerObj.transform.position,
+        var pathFinder = new SearchAStar(this,transform.position,PlayerObj.transform.position,
             new ManhattanDistance(playerObj.transform.position));
         var destination = pathFinder.Search();
 

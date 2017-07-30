@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
+using Assets.Scripts;
 using Assets.Scripts.LevelGeneration;
 using Assets.Scripts.Utility;
 using UnityEngine;
@@ -16,7 +17,7 @@ using Debug = System.Diagnostics.Debug;
 public class SearchAStar {
     private readonly Vector2 _end;
     private readonly PathHeuristic _heuristic;
-    private readonly int[,] _searchMap;
+    private readonly MovingObject _seeker;
     private readonly Vector2 _start;
     private readonly bool _debugMode = true;
 
@@ -28,8 +29,8 @@ public class SearchAStar {
     /// <param name="start">A vector2 to the starting location. Must be in worldspace</param>
     /// <param name="end">A vector2 to the ending location. Must be in worldspace</param>
     /// <param name="heuristic">A heurstic strategy object</param>
-    public SearchAStar(int[,] searchMap, Vector2 start, Vector2 end, PathHeuristic heuristic) {
-        _searchMap = searchMap;
+    public SearchAStar(MovingObject seeker, Vector2 start, Vector2 end, PathHeuristic heuristic) {
+        _seeker = seeker;
         _start = start;
         _end = end;
         _heuristic = heuristic;
@@ -71,6 +72,16 @@ public class SearchAStar {
             //If we're at the goal, end early
             if (current.Location.Equals(_end)) {
                 break;
+            }
+
+            //If we're far away, end early
+            if ((_end - current.Location).sqrMagnitude > 500f)
+            {
+                //We are very far away from the destination. It's likely we won't be able to reach it.
+                //Let's not waste performance.
+                UnityEngine.Debug.DrawLine(_start, _end, Color.gray, 300f);
+                UnityEngine.Debug.Log("<i>Pathfinding:</i> Pathfinding has reached a node that is too far away. Aborting. Distance: " + (current.Location - _end).magnitude);
+                return null;
             }
 
             //Otherwise, get the connections
@@ -134,14 +145,7 @@ public class SearchAStar {
         Assert.IsNotNull(current, "current != null");
         if (current.Location != _end) {
             //We're out of nodes and haven't found the goal. No solution.
-            UnityEngine.Debug.DrawLine(current.Location,_end,Color.black,300f);
-            return null;
-        }
-        if ((current.Location - _end).sqrMagnitude > 500) {
-            //We are very far away from the destination. It's likely we won't be able to reach it.
-            //Let's not waste performance.
-            UnityEngine.Debug.DrawLine(_start,_end,Color.gray,300f);
-            UnityEngine.Debug.Log("<i>Pathfinding:</i> Pathfinding has reached a node that is too far away. Aborting. Distance: " + (current.Location - _end).magnitude);
+            UnityEngine.Debug.DrawLine(current.Location,_end,Color.black,200f);
             return null;
         }
         //We found the path, time to compile a list of connections
@@ -168,20 +172,39 @@ public class SearchAStar {
         var worldX = (int) Mathf.Floor(worldCoordinate.x);
         var worldY = (int) Mathf.Floor(worldCoordinate.y);
         var retList = new List<Edge>(4);
+        var blockingLayer = LayerMask.GetMask("Blocking");
+        _seeker.GetComponent<BoxCollider2D>().enabled = false;
 
-        //TODO: Fix: When world generation is more robust, open tiles that have had an enemy or an item spawned on them will be considered blocked 
-        if (_searchMap[worldX + 1, worldY] == (int) LevelDecoration.Floor) {
-            retList.Add(new Edge(worldCoordinate, new Vector2(worldX + 1, worldY), tileRecord));
+        //TODO: Optimize: reduce the number of new vector2s created
+        for (int x = -1; x <= 1; ++x) {
+            for (int y = -1; y <= 1; ++y) {
+                if ((x != 0 && y != 0) || (x == 0 && y == 0)) {
+                    continue;
+                }
+                RaycastHit2D hit2D = Physics2D.Linecast(worldCoordinate,
+                    new Vector2(worldCoordinate.x + x, worldCoordinate.y + y), blockingLayer);
+                if (!hit2D || hit2D.transform.CompareTag("Player"))
+                {
+                    retList.Add(new Edge(worldCoordinate, new Vector2(worldCoordinate.x + x, worldCoordinate.y+y), tileRecord));
+                }
+            }
         }
-        if (_searchMap[worldX + -1, worldY] == (int) LevelDecoration.Floor) {
-            retList.Add(new Edge(worldCoordinate, new Vector2(worldX - 1, worldY), tileRecord));
+        _seeker.GetComponent<BoxCollider2D>().enabled = true;
+        /*
+        if (!Physics2D.Linecast(worldCoordinate,new Vector2(worldCoordinate.x+1,worldCoordinate.y),blockingLayer)) {
+            retList.Add(new Edge(worldCoordinate, new Vector2(worldCoordinate.x+1,worldCoordinate.y), tileRecord));
         }
-        if (_searchMap[worldX, worldY + 1] == (int) LevelDecoration.Floor) {
-            retList.Add(new Edge(worldCoordinate, new Vector2(worldX, worldY + 1), tileRecord));
+        if (!Physics2D.Linecast(worldCoordinate, new Vector2(worldCoordinate.x - 1, worldCoordinate.y),blockingLayer)) {
+            retList.Add(new Edge(worldCoordinate, new Vector2(worldCoordinate.x - 1, worldCoordinate.y), tileRecord));
         }
-        if (_searchMap[worldX, worldY - 1] == (int) LevelDecoration.Floor) {
-            retList.Add(new Edge(worldCoordinate, new Vector2(worldX, worldY - 1), tileRecord));
+        if (!Physics2D.Linecast(worldCoordinate, new Vector2(worldCoordinate.x, worldCoordinate.y+1),blockingLayer)) {
+            retList.Add(new Edge(worldCoordinate, new Vector2(worldCoordinate.x, worldCoordinate.y+1), tileRecord));
         }
+        if (!Physics2D.Linecast(worldCoordinate, new Vector2(worldCoordinate.x, worldCoordinate.y-1),blockingLayer))
+        {
+            retList.Add(new Edge(worldCoordinate, new Vector2(worldCoordinate.x, worldCoordinate.y-1), tileRecord));
+        }
+        */
         return retList;
     }
 
