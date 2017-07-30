@@ -33,6 +33,10 @@ namespace Assets.Scripts {
             _entitiesToMove.Add(enemyToRegister);
         }
 
+        public void UnregisterEnemy(MovingObject enemyToRemove) {
+            _entitiesToMove.Remove(enemyToRemove);
+        }
+
         // Use this for initialization
         private void Awake() {
             // Singleton Code
