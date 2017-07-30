@@ -90,6 +90,6 @@ public class StateMachine<EntityT>
     /// </summary>
     public bool IsInState(State<EntityT> check)
     {
-        return check.GetType() == _currentState.GetType();
+        return check == _currentState;
     }
 }
