@@ -88,8 +88,7 @@ public class StateMachine<EntityT>
     /// <summary>
     ///     Checks to see if the state machine is in a particular state
     /// </summary>
-    public bool IsInState(State<EntityT> check)
-    {
-        return check.GetType() == _currentState.GetType();
+    public bool IsInState(State<EntityT> check) {
+        return check == _currentState;
     }
 }
