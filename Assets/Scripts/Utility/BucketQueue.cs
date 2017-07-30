@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using NUnit.Framework.Constraints;
 using UnityEngine;
@@ -26,6 +27,7 @@ namespace Assets.Scripts.Utility
         /// </summary>
         /// <param name="initialBucketSize">The intial size of each of the buckets. Expands as needed. Default 10</param>
         public BucketQueue(int initialBucketSize = 10) {
+            Count = 0;
             _bucketSize = initialBucketSize;
             Buckets = new SortedDictionary<int, List<T>>();
             
@@ -45,6 +47,17 @@ namespace Assets.Scripts.Utility
             ++Count;
         }
 
+        public void LogContents() {
+            Debug.Log("DUMP: Reported Bucket Queue Size: " + Count);
+            Debug.Log("DUMP: Number of Keys/Buckets: " + Buckets.Keys.Count);
+            Debug.Log("DUMP: Total number of items: " + Buckets.Values.Sum(q => q.Count));
+            Debug.Log("DUMP: Total number of distinct items: " + Buckets.Values.SelectMany(q=>q).Count());
+            Debug.Log("DUMP: Contents of Bucket Queue:");
+            foreach (var item in this) {
+                UnityEngine.Debug.Log("DUMP: Item in Bucket Queue: " + item);
+            }
+        }
+
         /// <summary>
         /// Removes and returns the first item in the Queue.
         /// </summary>
@@ -54,7 +67,7 @@ namespace Assets.Scripts.Utility
                 throw new InvalidOperationException("Empty Queue");
             }
             var ret = Peek();
-            Buckets.Values.First(b => b != null).RemoveAt(0);
+            Buckets.Values.DefaultIfEmpty(null).First(b => b != null).RemoveAt(0);
             --Count;
             return ret;
         }
@@ -64,13 +77,7 @@ namespace Assets.Scripts.Utility
         /// </summary>
         /// <returns>An enumerator of the underlying object type</returns>
         public IEnumerator<T> GetEnumerator() {
-            for (int i = 0; i < Buckets.Count; ++i) {
-                if (Buckets.ContainsKey(i)) {
-                    foreach (var itemInBucket in Buckets[i]) {
-                        yield return itemInBucket;
-                    }
-                }
-            }
+            return Buckets.Keys.SelectMany(key => Buckets[key]).GetEnumerator();
         }
 
         /// <summary>
@@ -101,7 +108,7 @@ namespace Assets.Scripts.Utility
         public T Peek() {
             if (Count == 0) {
                 throw new InvalidOperationException("Empty Queue");}
-            return Buckets.Values.First(b => b != null && b.Count != 0).First();
+            return Buckets.Values.DefaultIfEmpty(null).First(b => b != null && b.Count != 0).First();
         }
     }
 }

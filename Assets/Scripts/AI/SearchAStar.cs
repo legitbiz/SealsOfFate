@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
+using Assets.Scripts;
 using Assets.Scripts.LevelGeneration;
 using Assets.Scripts.Utility;
 using UnityEngine;
+using UnityEngine.Assertions;
 using Debug = System.Diagnostics.Debug;
 
 //Copyright 2017 Legit Buisness, LLC, Andrew Waugh
@@ -14,7 +17,7 @@ using Debug = System.Diagnostics.Debug;
 public class SearchAStar {
     private readonly Vector2 _end;
     private readonly PathHeuristic _heuristic;
-    private readonly int[,] _searchMap;
+    private readonly MovingObject _seeker;
     private readonly Vector2 _start;
     private readonly bool _debugMode = true;
 
@@ -22,12 +25,12 @@ public class SearchAStar {
     ///     Ctor for the A* search. It requires a searchMap from the level, a world vector start and end,
     ///     and a heuristic strategy object.
     /// </summary>
-    /// <param name="searchMap">A featuremap from the LevelManager</param>
+    /// <param name="seeker">The entity looking for the path</param>
     /// <param name="start">A vector2 to the starting location. Must be in worldspace</param>
     /// <param name="end">A vector2 to the ending location. Must be in worldspace</param>
     /// <param name="heuristic">A heurstic strategy object</param>
-    public SearchAStar(int[,] searchMap, Vector2 start, Vector2 end, PathHeuristic heuristic) {
-        _searchMap = searchMap;
+    public SearchAStar(MovingObject seeker, Vector2 start, Vector2 end, PathHeuristic heuristic) {
+        _seeker = seeker;
         _start = start;
         _end = end;
         _heuristic = heuristic;
@@ -52,12 +55,33 @@ public class SearchAStar {
         openList.Enqueue(startRecord,(int)startRecord.EstimatedTotalCost);
 
         NodeRecord current = null;
+        Assert.raiseExceptions = true;
         while (openList.Count > 0) {
+            Assert.IsFalse(openList.Count > 50000,"OpenList has an insane number of nodes");
             current = openList.Peek();
+
+            if (openList.Count % 1000 == 0) {
+                UnityEngine.Debug.LogWarning("<i>Pathfinding:</i> There are too many nodes in the open list. >" + openList.Count);
+                //openList.LogContents();
+            }
+            if (closedList.Count > 0 && closedList.Count % 1000 == 0) { 
+                UnityEngine.Debug.LogWarning("<i>Pathfinding:</i> There are too many nodes in the closed list. >" + closedList.Count);
+                //closedList.LogContents();
+            }
 
             //If we're at the goal, end early
             if (current.Location.Equals(_end)) {
                 break;
+            }
+
+            //If we're far away, end early
+            if ((_end - current.Location).sqrMagnitude > 500f)
+            {
+                //We are very far away from the destination. It's likely we won't be able to reach it.
+                //Let's not waste performance.
+                UnityEngine.Debug.DrawLine(_start, _end, Color.gray, 300f);
+                UnityEngine.Debug.Log("<i>Pathfinding:</i> Pathfinding has reached a node that is too far away. Aborting. Distance: " + (current.Location - _end).magnitude);
+                return null;
             }
 
             //Otherwise, get the connections
@@ -67,17 +91,19 @@ public class SearchAStar {
             float endCost;
             float endHeuristic;
             foreach (var con in connections) {
-                endLoc = new Vector2(con.Destination.x, con.Destination.y);
+                endLoc = con.Destination;
                 endCost = current.CostSoFar + con.Cost;
 
-                if (_debugMode && con.From != Vector2.zero) {
+                if (_debugMode) {
                     UnityEngine.Debug.DrawLine(con.From, con.Destination, Color.blue,2,false);
                 }
 
                 //If the node is closed, we may have to skip or remove from the closed list
-                if (closedList.Any(conn => conn.Location.Equals(endLoc))) {
+                if (closedList.Any(closedRecord => closedRecord.Location == endLoc)) {
+                    Assert.IsNotNull(closedList,"Closed List should not be null.");
+                    Assert.IsFalse(closedList.Count == 0,"Closed List should not be empty");
                     endNodeRecord =
-                        closedList.Single(locRec => locRec.Location.Equals(endLoc)); //Retrieve the record we found
+                        closedList.First(closedRecord => closedRecord.Location.Equals(endLoc)); //Retrieve the record we found
                     if (endNodeRecord.CostSoFar <= endCost) {
                         //If this route isn't shorter, then skip.
                         continue;
@@ -87,9 +113,9 @@ public class SearchAStar {
                     //Recalculate the heuristic. TODO: recalculate using old values
                     endHeuristic = _heuristic.Estimate(endLoc);
                 }
-                else if (openList.Any(conn => conn.Location.Equals(endLoc))) {
+                else if (openList.Any(openRecord => openRecord.Location == endLoc)) {
                     //Skip if the node is open and we haven't found a better route
-                    endNodeRecord = openList.Single(locRec => locRec.Location.Equals(endLoc));
+                    endNodeRecord = openList.First(openRecord => openRecord.Location == endLoc);
 
                     if (endNodeRecord.CostSoFar <= endCost) {
                         continue;
@@ -107,23 +133,25 @@ public class SearchAStar {
                 endNodeRecord.Connection = con; //remember: we're iterating through the connections right now
                 endNodeRecord.EstimatedTotalCost = endCost + endHeuristic;
 
-                if (!openList.Any(openConn => openConn.Location.Equals(endLoc))) {
-                    openList.Enqueue(endNodeRecord,(int)endNodeRecord.EstimatedTotalCost);
+                //If this record isn't in the openlist already
+                if (openList.All(openRecord => openRecord.Location != endLoc)) {
+                    openList.Enqueue(endNodeRecord, (int) endNodeRecord.EstimatedTotalCost);
                 }
             }
             //Finished looking at the connections, move it to the closed list.
             openList.Remove(current,(int)current.EstimatedTotalCost);
             closedList.Enqueue(current,(int)current.EstimatedTotalCost);
         }
-        Debug.Assert(current != null, "current != null");
-        if (!current.Location.Equals(_end)) {
+        Assert.IsNotNull(current, "current != null");
+        if (current.Location != _end) {
             //We're out of nodes and haven't found the goal. No solution.
+            UnityEngine.Debug.DrawLine(current.Location,_end,Color.black,200f);
             return null;
         }
         //We found the path, time to compile a list of connections
         var outputList = new List<Edge>(20);
 
-        while (!current.Location.Equals(_start)) {
+        while (current.Location != _start) {
             if (_debugMode) {
                 UnityEngine.Debug.DrawLine(current.Connection.From, current.Connection.Destination, Color.red, 2, false);
             }
@@ -137,27 +165,30 @@ public class SearchAStar {
     /// <summary>
     /// Generates a list of edges connected to a location given in a tile record.
     /// </summary>
-    /// <param name="tileRecord"></param>
+    /// <param name="tileRecord">The location record to get connections from</param>
     /// <returns>A list of at most 4 edges connected to this tile record.</returns>
     private List<Edge> GetConnections(NodeRecord tileRecord) {
         var worldCoordinate = tileRecord.Location;
-        var worldX = (int) Mathf.Floor(worldCoordinate.x);
-        var worldY = (int) Mathf.Floor(worldCoordinate.y);
         var retList = new List<Edge>(4);
+        var blockingLayer = LayerMask.GetMask("Blocking");
+        _seeker.GetComponent<BoxCollider2D>().enabled = false;
 
-        //TODO: Fix: When world generation is more robust, open tiles that have had an enemy or an item spawned on them will be considered blocked 
-        if (_searchMap[worldX + 1, worldY] == (int) LevelDecoration.Floor) {
-            retList.Add(new Edge(worldCoordinate, new Vector2(worldX + 1, worldY), tileRecord));
+        //TODO: Optimize: reduce the number of new vector2s created
+        //TODO: Generalize the collision exceptions
+        for (int x = -1; x <= 1; ++x) {
+            for (int y = -1; y <= 1; ++y) {
+                if ((x != 0 && y != 0) || (x == 0 && y == 0)) {
+                    continue;
+                }
+                RaycastHit2D hit2D = Physics2D.Linecast(worldCoordinate,
+                    new Vector2(worldCoordinate.x + x, worldCoordinate.y + y), blockingLayer);
+                if (!hit2D || hit2D.transform.CompareTag("Player"))
+                {
+                    retList.Add(new Edge(worldCoordinate, new Vector2(worldCoordinate.x + x, worldCoordinate.y+y), tileRecord));
+                }
+            }
         }
-        if (_searchMap[worldX + -1, worldY] == (int) LevelDecoration.Floor) {
-            retList.Add(new Edge(worldCoordinate, new Vector2(worldX - 1, worldY), tileRecord));
-        }
-        if (_searchMap[worldX, worldY + 1] == (int) LevelDecoration.Floor) {
-            retList.Add(new Edge(worldCoordinate, new Vector2(worldX, worldY + 1), tileRecord));
-        }
-        if (_searchMap[worldX, worldY - 1] == (int) LevelDecoration.Floor) {
-            retList.Add(new Edge(worldCoordinate, new Vector2(worldX, worldY - 1), tileRecord));
-        }
+        _seeker.GetComponent<BoxCollider2D>().enabled = true;
         return retList;
     }
 
@@ -174,6 +205,10 @@ public class SearchAStar {
         public float EstimatedTotalCost;
         /// <summary>The world location of this node</summary>
         public Vector2 Location;
+
+        public override string ToString() {
+            return "Node At " + Location + "Estimated/Measured cost" + EstimatedTotalCost + "/" + CostSoFar;
+        }
     }
 
     /// <summary>

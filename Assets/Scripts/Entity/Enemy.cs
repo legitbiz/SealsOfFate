@@ -91,6 +91,10 @@ public class Enemy : MovingObject, IAttackable {
 
         if (_combatData.HealthPoints <= 0) {
             Debug.Log("In theory, this penguin is dead");
+            // TODO Add a death animation
+            var mo = gameObject.GetComponent<MovingObject>();
+            GameManager.GetInstance().UnregisterEnemy(mo);
+            Destroy(gameObject);
         }
     }
 
@@ -107,9 +111,7 @@ public class Enemy : MovingObject, IAttackable {
     public void SeekPlayer() {
         var playerObj = FindObjectOfType<Player>();
 
-        var pathFinder = new SearchAStar(GameManager.CurrentLevelFeatureMap,
-            transform.position,
-            playerObj.transform.position,
+        var pathFinder = new SearchAStar(this,transform.position,playerObj.transform.position,
             new ManhattanDistance(playerObj.transform.position));
         var destination = pathFinder.Search();
 

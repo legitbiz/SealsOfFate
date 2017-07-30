@@ -36,6 +36,14 @@ namespace Assets.Scripts {
         }
 
         /// <summary>
+        ///     Unregisters an enemy so we don't try to make dead people move.
+        /// </summary>
+        /// <param name="enemyToRemove">The enemy to unregister</param>
+        public void UnregisterEnemy(MovingObject enemyToRemove) {
+            _entitiesToMove.Remove(enemyToRemove);
+        }
+
+        /// <summary>
         ///     Initializes the GameManager
         /// </summary>
         private void Awake() {
