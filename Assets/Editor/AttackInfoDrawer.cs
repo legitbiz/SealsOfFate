@@ -1,19 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Combat;
+﻿using Combat;
 using UnityEditor;
 using UnityEngine;
 
 [CustomPropertyDrawer(typeof(AttackInfo))]
-public class AttackInfoDrawer : PropertyDrawer
-{
-    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-    {
+public class AttackInfoDrawer : PropertyDrawer {
+    public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
         return base.GetPropertyHeight(property, label);
     }
 
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-    {
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
         EditorGUI.BeginProperty(position, label, property);
 
         position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);

@@ -7,7 +7,7 @@ using UnityEngine;
 // delegates the room creation 
 namespace Assets.Scripts {
     public class GameManager : MonoBehaviour {
-        private static float MinimumDistanceFromPlayer = 200f;
+        private static readonly float MinimumDistanceFromPlayer = 200f;
         public static GameManager Instance;
         private readonly int currentLevel = 1;
         private int _enemyTurn;
@@ -26,6 +26,11 @@ namespace Assets.Scripts {
         public bool IsMoving { get; set; }
 
         public LevelManager LevelScript { get; set; }
+
+        /// <summary>Get the CurrentLevelFeatureMap</summary>
+        internal static int[,] CurrentLevelFeatureMap {
+            get { return Instance.LevelScript.CurrentLevel.FeatureMap; }
+        }
 
         /// <summary>
         ///     Registers an enemy so we can make it move
@@ -64,15 +69,10 @@ namespace Assets.Scripts {
             InitLevel();
         }
 
-        /// <summary>Get the CurrentLevelFeatureMap</summary>
-        internal static int[,] CurrentLevelFeatureMap {
-            get { return Instance.LevelScript.CurrentLevel.FeatureMap; }
-        }
-
-/// <summary> 
-///     Handles returning the game control to player and running other entities
-/// </summary>
-private void Update() {
+        /// <summary>
+        ///     Handles returning the game control to player and running other entities
+        /// </summary>
+        private void Update() {
             // Bail if this is the player's turn
             if (PlayersTurn) {
                 return;

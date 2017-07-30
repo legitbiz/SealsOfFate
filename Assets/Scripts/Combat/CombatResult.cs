@@ -1,5 +1,4 @@
-﻿namespace Combat
-{
+﻿namespace Combat {
     /// <summary>
     ///     The result of agiven combat
     /// </summary>

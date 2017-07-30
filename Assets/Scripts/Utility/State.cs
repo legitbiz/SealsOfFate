@@ -8,8 +8,7 @@
 ///     Game AI By Example" by Mat Buckland.Modified for C# and the
 /// </remarks>
 /// <typeparam name="EntityT"></typeparam>
-public abstract class State<EntityT>
-{
+public abstract class State<EntityT> {
     public abstract void Enter(EntityT owner);
 
     public abstract void Execute(EntityT owner);

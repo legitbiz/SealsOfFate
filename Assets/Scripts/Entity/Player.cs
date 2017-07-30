@@ -9,8 +9,6 @@ using UnityEngine.SceneManagement;
 ///     GameObjects in the generated scene.
 /// </summary>
 public class Player : MovingObject, IAttackable {
-    
-
     /// <summary>Stores a reference to the Player's animator component.</summary>
     private Animator _animator;
 
@@ -18,8 +16,7 @@ public class Player : MovingObject, IAttackable {
     ///     Data about the player for combat purposes
     /// </summary>
     // TODO Create a default player CombatData to initialize during game start
-    [SerializeField]
-    private CombatData _combatData;
+    [SerializeField] private CombatData _combatData;
 
     /// <summary>Stores the Player's current food points during the level.</summary>
     private int _food;
@@ -38,16 +35,6 @@ public class Player : MovingObject, IAttackable {
 
     /// <summary>How much damage the Player inflicts to the Wall object when it attacks.</summary>
     public int WallDamage = 1;
-
-    public Player() {
-        
-        // TODO populate me
-        //_combatData = new CombatData {
-        //    HealthPoints = 100,
-        //    ManaPoints = 10,
-        //    SealieAttack = new AttackInfo(10, DamageType.Blunt, "A vicious nose boop")
-        //};
-    }
 
     /// <summary>
     ///     Creates a CombatData object from the player
@@ -70,7 +57,7 @@ public class Player : MovingObject, IAttackable {
     public void Attack(IAttackable defender) {
         _combatData = GetComponent<CombatData>();
         var damage = CombatData.ComputeDamage(_combatData.ToTemporaryCombatData(), defender.ToTemporaryCombatData());
-        Debug.Log(String.Format("player inflicts {0} damage on penguin", damage.DefenderDamage.HealthDamage));
+        Debug.Log(string.Format("player inflicts {0} damage on penguin", damage.DefenderDamage.HealthDamage));
         defender.TakeDamage(damage.DefenderDamage);
         TakeDamage(damage.AttackerDamage);
     }
@@ -86,8 +73,7 @@ public class Player : MovingObject, IAttackable {
 
         _combatData.ManaPoints -= damage.ManaDamage;
 
-        if (_combatData.HealthPoints <= 0)
-        {
+        if (_combatData.HealthPoints <= 0) {
             Debug.Log("In theory, this penguin is dead");
             Destroy(gameObject);
             // TODO Trigger game over animation
@@ -102,11 +88,6 @@ public class Player : MovingObject, IAttackable {
         // Get a component reference to the Player's animator component
         _animator = GetComponent<Animator>();
         _combatData = GetComponent<CombatData>();
-
-        //// Get the current food point total stored in GameManager.instance between levels.
-        //if (GameManager.Instance.PlayerHealth > 0) {
-        //    _combatData.HealthPoints = GameManager.Instance.PlayerHealth;
-        //} 
 
         // Call the Start function of the MovingObject base class.
         base.Start();

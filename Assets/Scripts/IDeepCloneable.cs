@@ -1,7 +1,5 @@
 ﻿namespace Assets.Scripts {
-
-    public interface IDeepCloneable
-    {
+    public interface IDeepCloneable {
         object DeepClone();
     }
 
@@ -18,6 +16,4 @@
     public interface IDeepCloneable<T> : IDeepCloneable {
         new T DeepClone();
     }
-
-    
 }

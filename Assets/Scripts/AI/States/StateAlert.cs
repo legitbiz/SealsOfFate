@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿
 
 /******************************************************************************
  * File     : StateAlert.cs
@@ -11,31 +8,18 @@ using UnityEngine;
  * transitions to the playerSeek state.
  ******************************************************************************/
 //Copyright 2017 Andrew Waugh, Licensed under the terms of the MIT license.
-public class StateAlert : State<Enemy>
-{
-    private static StateAlert instance = null;
-    public override void Enter(Enemy owner)
-    {
+public class StateAlert : State<Enemy> {
+    private static StateAlert instance;
+
+    public override void Enter(Enemy owner) {
         owner.StateMachine.ChangeState(StateSeekPlayer.getInstance());
     }
 
-    public override void Execute(Enemy owner)
-    {
-        return;
-    }
+    public override void Execute(Enemy owner) { }
 
-    public override void Exit(Enemy owner)
-    {
-        return;
-    }
+    public override void Exit(Enemy owner) { }
 
-    public static StateAlert getInstance()
-    {
-        if (instance == null)
-        {
-            instance = new StateAlert();
-        }
-
-        return instance;
+    public static StateAlert getInstance() {
+        return instance ?? (instance = new StateAlert());
     }
 }

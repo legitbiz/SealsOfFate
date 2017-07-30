@@ -11,14 +11,12 @@
 ///     SealsOfFate.
 /// </remarks>
 /// <typeparam name="EntityT"></typeparam>
-public class StateMachine<EntityT>
-{
+public class StateMachine<EntityT> {
     private readonly EntityT _owner; // The agent that is using this state machine
     private State<EntityT> _currentState; // The current state of the agent
     private State<EntityT> _previousState; // A record of the previous state of the agent
 
-    public StateMachine(EntityT owner)
-    {
+    public StateMachine(EntityT owner) {
         _owner = owner;
         _currentState = null;
         _previousState = null;
@@ -28,11 +26,9 @@ public class StateMachine<EntityT>
     /// <summary>
     ///     Current agent state
     /// </summary>
-    public State<EntityT> CurrentState
-    {
+    public State<EntityT> CurrentState {
         get { return _currentState; }
-        set
-        {
+        set {
             _currentState = value;
             _currentState.Enter(_owner);
         }
@@ -50,23 +46,19 @@ public class StateMachine<EntityT>
     ///     This must be called manually since StateMachine does not inherit from MonoBehaviour.
     /// </remarks>
     // 
-    public void Update()
-    {
+    public void Update() {
         // If we have a defined global state, execute it first
-        if (GlobalState != null)
-        {
+        if (GlobalState != null) {
             GlobalState.Execute(_owner);
         }
 
         // Now run the current state
-        if (_currentState != null)
-        {
+        if (_currentState != null) {
             _currentState.Execute(_owner);
         }
     }
 
-    public void ChangeState(State<EntityT> newState)
-    {
+    public void ChangeState(State<EntityT> newState) {
         //save our current state as the previous
         _previousState = _currentState;
         //Call our current state's exit behavior
@@ -80,16 +72,14 @@ public class StateMachine<EntityT>
     /// <summary>
     ///     Reverts to the previous state.
     /// </summary>
-    public void RevertState()
-    {
+    public void RevertState() {
         ChangeState(_previousState);
     }
 
     /// <summary>
     ///     Checks to see if the state machine is in a particular state
     /// </summary>
-    public bool IsInState(State<EntityT> check)
-    {
+    public bool IsInState(State<EntityT> check) {
         return check == _currentState;
     }
 }
