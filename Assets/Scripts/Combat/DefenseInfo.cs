@@ -1,11 +1,12 @@
 ﻿using System;
+using Object = UnityEngine.Object;
 
 namespace Combat {
     /// <summary>
     ///     Information about defense
     /// </summary>
     [Serializable]
-    public class DefenseInfo : UnityEngine.Object {
+    public class DefenseInfo : Object {
         private const int MaxDamageMitigation = 100;
         private byte _damageMitigation;
 

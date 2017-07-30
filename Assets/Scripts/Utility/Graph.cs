@@ -2,43 +2,49 @@
 using System.Linq;
 
 /// <summary>
-/// A very low-level, generic Graph data structure. It provides 
-/// convenient access to the Vertices by exposing an enumerable
-/// Adjacency List.
+///     A very low-level, generic Graph data structure. It provides
+///     convenient access to the Vertices by exposing an enumerable
+///     Adjacency List.
 /// </summary>
 /// <remarks>
-/// This class is intended to be extended and built upon, not used 
-/// on its own for any real heavy lifting. Due to its generic nature,
-/// it is assumed that whoever is extending this class will provide
-/// logic for distinguishing Vertices from one another for the purposes
-/// of methods like AddEdge, etc. This class does not presume to perform
-/// such operations nor does it assume the data supports it. This is the
-/// responsibility of the client code. That is exactly why some of the 
-/// methods take in generic Vertex as parameters.
+///     This class is intended to be extended and built upon, not used
+///     on its own for any real heavy lifting. Due to its generic nature,
+///     it is assumed that whoever is extending this class will provide
+///     logic for distinguishing Vertices from one another for the purposes
+///     of methods like AddEdge, etc. This class does not presume to perform
+///     such operations nor does it assume the data supports it. This is the
+///     responsibility of the client code. That is exactly why some of the
+///     methods take in generic Vertex as parameters.
 /// </remarks>
 public class Graph<T> {
     private readonly List<Vertex> _adjacencyList;
-    /// <summary>Exposes the Adjacency List for algorithmic convenience.</summary>
-    public IEnumerable<Vertex> AdjacencyList { get { return _adjacencyList; } }
-    /// <summary>The number of Vertices in the Graph.</summary>
-    public int Count { get { return _adjacencyList.Count ; } }
 
     /// <summary>Creates the Graph with the specified number of vertices.</summary>
     /// <param name="initialSize">
-    /// The number of Vertices to allocate for the Graph.
-    /// The default number of Vertices to create is set to 12 to
-    /// accommodate a reasonably sized graph.
+    ///     The number of Vertices to allocate for the Graph.
+    ///     The default number of Vertices to create is set to 12 to
+    ///     accommodate a reasonably sized graph.
     /// </param>
     /// <remarks>
-    /// You are doing yourself a disservice if you don't take it upon
-    /// yourself to pass in a reasonable initial value for the Graph
-    /// based on your expected dataset. Not doing so and then using
-    /// a huge dataset will mar your soul with the most grievous of performance sins.
+    ///     You are doing yourself a disservice if you don't take it upon
+    ///     yourself to pass in a reasonable initial value for the Graph
+    ///     based on your expected dataset. Not doing so and then using
+    ///     a huge dataset will mar your soul with the most grievous of performance sins.
     /// </remarks>
     public Graph(int initialSize = 12) {
         if (initialSize > 0) {
             _adjacencyList = new List<Vertex>(initialSize);
         }
+    }
+
+    /// <summary>Exposes the Adjacency List for algorithmic convenience.</summary>
+    public IEnumerable<Vertex> AdjacencyList {
+        get { return _adjacencyList; }
+    }
+
+    /// <summary>The number of Vertices in the Graph.</summary>
+    public int Count {
+        get { return _adjacencyList.Count; }
     }
 
     /// <summary>Adds a Vertex into the Graph.</summary>
@@ -62,8 +68,8 @@ public class Graph<T> {
     /// <param name="destination">The destination vertex.</param>
     /// <remarks>The edge is inserted from Source -> Destination.</remarks>
     /// <returns>
-    /// True if an edge was established, False if one or more arguments
-    /// could not be resolved to valid vertices.
+    ///     True if an edge was established, False if one or more arguments
+    ///     could not be resolved to valid vertices.
     /// </returns>
     public bool AddEdge(Vertex source, Vertex destination) {
         if (source == null || destination == null) {
@@ -84,8 +90,8 @@ public class Graph<T> {
     }
 
     /// <summary>
-    /// Provides an IEnumerable to iterate over all adjacent 
-    /// vertices to the specified vertex.
+    ///     Provides an IEnumerable to iterate over all adjacent
+    ///     vertices to the specified vertex.
     /// </summary>
     /// <param name="vertex">The Vertex whose neighbors to iterate over.</param>
     public IEnumerable<Vertex> Neighbors(Vertex vertex) {
@@ -93,7 +99,7 @@ public class Graph<T> {
     }
 
     /// <summary>
-    /// Clears/removes all vertices from the Graph.
+    ///     Clears/removes all vertices from the Graph.
     /// </summary>
     public void Clear() {
         _adjacencyList.Clear();
@@ -101,16 +107,20 @@ public class Graph<T> {
 
     /// <summary>Represents a Vertex node in a Graph.</summary>
     public class Vertex {
-        /// <summary>The data held by the Vertex.</summary>
-        public T Data { get; private set; }
-        /// <summary>The number of adjacent vertices to this one.</summary>
-        public int CountAdjacent { get { return _edgeList.Count; } }
         /// <summary>The list of adjacent Vertices.</summary>
         private readonly List<Edge> _edgeList = new List<Edge>();
 
         /// <summary>Constructs the Vertex with the initial value.</summary>
         public Vertex(T initialValue) {
-            Data = initialValue;    
+            Data = initialValue;
+        }
+
+        /// <summary>The data held by the Vertex.</summary>
+        public T Data { get; private set; }
+
+        /// <summary>The number of adjacent vertices to this one.</summary>
+        public int CountAdjacent {
+            get { return _edgeList.Count; }
         }
 
         /// <summary>Adds an Edge from this Vertex to the provided Vertex.</summary>
@@ -128,7 +138,7 @@ public class Graph<T> {
             }
 
             // RemoveAll returns # removed, if it's not zero, success.
-            return (_edgeList.RemoveAll(e => e.To == detachFrom) != 0);
+            return _edgeList.RemoveAll(e => e.To == detachFrom) != 0;
         }
 
         /// <summary>Provides an enumerable collection of Vertices adjacent to this one.</summary>
@@ -140,13 +150,14 @@ public class Graph<T> {
 
     /// <summary>Represents an Edge between two Vertices.</summary>
     public class Edge {
-        /// <summary>A reference to the Vertex that this edge leads to.</summary>
-         public Vertex To { get; set; }
-         public Vertex From { get; set; }
+        public Edge(Vertex adjacentFrom, Vertex adjacentTo) {
+            To = adjacentTo;
+            From = adjacentFrom;
+        }
 
-         public Edge(Vertex adjacentFrom, Vertex adjacentTo) {
-             To = adjacentTo;
-             From = adjacentFrom;
-         }
+        /// <summary>A reference to the Vertex that this edge leads to.</summary>
+        public Vertex To { get; set; }
+
+        public Vertex From { get; set; }
     }
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿
 
 /******************************************************************************
  * File     : StateSeekPlayer.cs
@@ -9,30 +6,19 @@ using UnityEngine;
  * Notes    : 
  ******************************************************************************/
 //Copyright 2017 Andrew Waugh, Licensed under the terms of the MIT license.
-public class StateSeekPlayer : State<Enemy>
-{
-    private static StateSeekPlayer instance = null;
+public class StateSeekPlayer : State<Enemy> {
+    private static StateSeekPlayer instance;
 
-    public override void Enter(Enemy owner)
-    {
-        return;
-    }
+    public override void Enter(Enemy owner) { }
 
-    public override void Execute(Enemy owner)
-    {
+    public override void Execute(Enemy owner) {
         owner.SeekPlayer();
-        return;
     }
 
-    public override void Exit(Enemy owner)
-    {
-        return;
-    }
+    public override void Exit(Enemy owner) { }
 
-    public static StateSeekPlayer getInstance()
-    {
-        if (instance == null)
-        {
+    public static StateSeekPlayer getInstance() {
+        if (instance == null) {
             instance = new StateSeekPlayer();
         }
 
