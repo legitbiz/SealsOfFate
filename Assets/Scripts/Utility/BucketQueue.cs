@@ -89,6 +89,18 @@ namespace Assets.Scripts.Utility
         }
 
         /// <summary>
+        /// Index operator for the Bucket Queue. Used to read the elements in a particular bucket.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns>An IEnumerable of elements in the particular bucket. Returns an empty enumerable
+        /// if the bucket is empty.</returns>
+        public IEnumerable<T> this[int key] {
+            get {
+                return !Buckets.ContainsKey(key) ? Enumerable.Empty<T>() : Buckets[key];
+            } 
+        }
+
+        /// <summary>
         /// Removes a single item from the queue.
         /// </summary>
         /// <param name="toRemove"></param>
