@@ -101,22 +101,40 @@ namespace Assets.Scripts.Utility
         }
 
         /// <summary>
-        /// Removes a single item from the queue.
+        /// Removes a single item from the queue with a better performance than the general remove.
         /// </summary>
-        /// <param name="toRemove"></param>
-        /// <param name="key"></param>
-        public void Remove(T toRemove, int key) {
+        /// <param name="toRemove">The element to remove</param>
+        /// <param name="key">The key that toRemove is associated with</param>
+        /// <returns>False if unable to find the given item to remove in the given bucket. True otherwise.</returns>
+        /// <throws>Throws an ArgumentException if the BucketQueue doesn't have a bucket at the given key</throws>
+        /// <remarks>Only removes the first matching item encountered in the bucket.</remarks>
+        public bool Remove(T toRemove, int key) {
             if (!Buckets.ContainsKey(key) || Buckets[key] == null) {
-                throw new ArgumentException("key");
+                throw new ArgumentException("Bucket specified by key does not exist");
             }
             --Count;
-            Buckets[key].Remove(toRemove);
+            return Buckets[key].Remove(toRemove);
+        }
+
+        /// <summary>
+        /// Removes a single item from the queue without knowing the bucket it's in. Has O(n) worst case performance.
+        /// </summary>
+        /// <param name="toRemove"></param>
+        /// <returns>False if unable to find the given item. True otherwise.</returns>
+        /// <remarks>Only removes the first matching item encountered.</remarks>
+        public bool Remove(T toRemove) {
+            if (Buckets.Values.Any(bucket => bucket != null && bucket.Remove(toRemove))) {
+                --Count;
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
         /// Returns the first item in the queue
         /// </summary>
         /// <returns>The item at the front of the queue</returns>
+        /// <throws>Throws an InvalidOperationException if the queue is empty</throws>
         public T Peek() {
             if (Count == 0) {
                 throw new InvalidOperationException("Empty Queue");}
