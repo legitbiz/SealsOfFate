@@ -93,7 +93,7 @@ namespace Assets.Scripts.Utility
         /// if the bucket is empty.</returns>
         public IEnumerable<T> this[int key] {
             get {
-                return !Buckets.ContainsKey(key) ? Enumerable.Empty<T>() : Buckets[key];
+                return Buckets.ContainsKey(key) ? Buckets[key] : Enumerable.Empty<T>();
             } 
         }
 
