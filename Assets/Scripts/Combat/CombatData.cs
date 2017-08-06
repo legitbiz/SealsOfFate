@@ -88,7 +88,7 @@ namespace Combat {
         /// <summary>
         ///     Someone's armor
         /// </summary>
-        [Range(0, 16384)] public int Armor;
+        [Range(0, 80)] public int Armor;
 
         /// <summary>
         ///     Is this combatant blocking?
@@ -100,7 +100,7 @@ namespace Combat {
         ///     The player's default damage reduction rating.
         ///     Incoming damage is reduced by this percent.
         /// </summary>
-        [Range(0, 100)] public int DamageReduction;
+        [Range(0, 70)] public int DamageReduction;
 
         /// <summary>
         ///     The defense info
@@ -115,12 +115,12 @@ namespace Combat {
         /// <summary>
         ///     The health of this object
         /// </summary>
-        [Range(0, 32768)] public int HealthPoints;
+        [Range(0, 200)] public int HealthPoints;
 
         /// <summary>
         ///     ManaPoints from combat
         /// </summary>
-        [Range(0, 32768)] public int ManaPoints;
+        [Range(0, 200)] public int ManaPoints;
 
         /// <summary>
         ///     The sealie (melee) attack info

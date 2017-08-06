@@ -75,7 +75,9 @@ public class Enemy : MovingObject, IAttackable {
         // TODO this code is currently copypasta from the Player. That definitely needs to be changed.
         _combatData = GetComponent<CombatData>();
         var damage = CombatData.ComputeDamage(_combatData.ToTemporaryCombatData(), defender.ToTemporaryCombatData());
+
         Debug.Log(string.Format("penguin inflicts {0} damage on player", damage.DefenderDamage.HealthDamage));
+
         defender.TakeDamage(damage.DefenderDamage);
         TakeDamage(damage.AttackerDamage);
     }
@@ -89,13 +91,14 @@ public class Enemy : MovingObject, IAttackable {
         _combatData.HealthPoints -= damage.HealthDamage;
         _combatData.ManaPoints -= damage.ManaDamage;
 
-        if (_combatData.HealthPoints <= 0) {
-            Debug.Log("In theory, this penguin is dead");
-            // TODO Add a death animation
-            var mo = gameObject.GetComponent<MovingObject>();
-            GameManager.GetInstance().UnregisterEnemy(mo);
-            Destroy(gameObject);
+        if (_combatData.HealthPoints > 0) {
+            return;
         }
+
+        // TODO Add a death animation
+        var mo = gameObject.GetComponent<MovingObject>();
+        GameManager.GetInstance().UnregisterEnemy(mo);
+        Destroy(gameObject);
     }
 
     /// <summary>
