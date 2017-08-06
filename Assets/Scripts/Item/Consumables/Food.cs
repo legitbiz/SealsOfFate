@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts;
+using Combat;
 using UnityEngine;
 /// <summary>
 ///     A food consumable that applies some manner of health to a player
@@ -28,13 +29,19 @@ public class Food : Consumable {
     ///     different amounts of health.
     /// </summary>
     public override void Consume() {
-        var newHealth = GameManager.Instance.PlayerHealth + HealthMod * Multiplier;
+        var player = FindObjectOfType<Player>();
+        var combatData = player.GetComponent<CombatData>();
 
-        if (newHealth > ushort.MaxValue) {
-            newHealth = ushort.MaxValue;
-        }
+        combatData.HealthPoints += (HealthMod * Multiplier);
 
-        GameManager.Instance.PlayerHealth = (short)newHealth;
+        //var newHealth = GameManager.Instance.PlayerHealth + HealthMod * Multiplier;
+
+        //if (newHealth > ushort.MaxValue) {
+        //    newHealth = ushort.MaxValue;
+        //}
+
+        //GameManager.Instance.PlayerHealth = (short)newHealth;
+
         base.Consume();
     }
 }
