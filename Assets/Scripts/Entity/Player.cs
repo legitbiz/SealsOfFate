@@ -3,13 +3,14 @@ using Assets.Scripts;
 using Combat;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 /// <summary>
 ///     This class contains logic for processing player input and interacting with other relevant
 ///     GameObjects in the generated scene.
 /// </summary>
 public class Player : MovingObject, IAttackable {
-    
+    public RectTransform healthBar;
 
     /// <summary>Stores a reference to the Player's animator component.</summary>
     private Animator _animator;
@@ -84,6 +85,10 @@ public class Player : MovingObject, IAttackable {
     public void TakeDamage(Damage damage) {
         _combatData = GetComponent<CombatData>();
         _combatData.HealthPoints -= damage.HealthDamage;
+
+        healthBar.sizeDelta = new Vector2(_combatData.HealthPoints,
+                                          healthBar.sizeDelta.y);
+
         GameManager.Instance.PlayerHealth -= damage.HealthDamage;
 
         _combatData.ManaPoints -= damage.ManaDamage;
