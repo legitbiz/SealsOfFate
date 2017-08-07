@@ -116,12 +116,13 @@ namespace Combat {
         ///     The health of this object
         /// </summary>
         [Range(0, 200)] public int HealthPoints;
+        private int _maxHealthPoints;
 
         /// <summary>
         ///     ManaPoints from combat
         /// </summary>
         [Range(0, 200)] public int ManaPoints;
-
+        private int _maxManaPoints;
         /// <summary>
         ///     The sealie (melee) attack info
         /// </summary>
@@ -160,8 +161,41 @@ namespace Combat {
             get { return _defenseEffects; }
         }
 
+        void Awake() {
+            _maxHealthPoints = HealthPoints;
+            _maxManaPoints = ManaPoints;
+        }
+
         public TemporaryCombatData ToTemporaryCombatData() {
             return new TemporaryCombatData(this);
+        }
+
+        /// <summary>
+        /// Heals the player, discarding any over heal.
+        /// </summary>
+        /// <param name="amount">
+        /// The amount of hit points the player regenerates.
+        /// </param>
+        public void Heal(ushort amount) {
+            if (HealthPoints + amount >= _maxHealthPoints) {
+                HealthPoints = _maxHealthPoints;
+            } else {
+                HealthPoints += amount;
+            }
+        }
+
+        /// <summary>
+        /// Recharges the player's mana, discarding any over generation.
+        /// </summary>
+        /// <param name="amount">
+        /// The amount of mana points the player regenerates.
+        /// </param>
+        public void RechargeMana(ushort amount) {
+            if (ManaPoints + amount >= _maxManaPoints) {
+                ManaPoints = _maxManaPoints;
+            } else {
+                ManaPoints += amount;
+            }
         }
 
         /// <summary>

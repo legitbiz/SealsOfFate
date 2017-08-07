@@ -32,15 +32,7 @@ public class Food : Consumable {
         var player = FindObjectOfType<Player>();
         var combatData = player.GetComponent<CombatData>();
 
-        combatData.HealthPoints += (HealthMod * Multiplier);
-
-        //var newHealth = GameManager.Instance.PlayerHealth + HealthMod * Multiplier;
-
-        //if (newHealth > ushort.MaxValue) {
-        //    newHealth = ushort.MaxValue;
-        //}
-
-        //GameManager.Instance.PlayerHealth = (short)newHealth;
+        combatData.Heal((ushort)(HealthMod * Multiplier));
 
         base.Consume();
     }
