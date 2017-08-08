@@ -116,12 +116,14 @@ namespace Combat {
         ///     The health of this object
         /// </summary>
         [Range(0, 200)] public int HealthPoints;
+        /// <summary>The maximum amount of health points possible.</summary>
         public int MaxHealthPoints { get; set; }
 
         /// <summary>
         ///     ManaPoints from combat
         /// </summary>
         [Range(0, 200)] public int ManaPoints;
+        /// <summary>The maximum amount of mana points possible.</summary>
         public int MaxManaPoints { get; set; }
         /// <summary>
         ///     The sealie (melee) attack info
