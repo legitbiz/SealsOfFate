@@ -32,7 +32,7 @@ public class Food : Consumable {
         var player = FindObjectOfType<Player>();
         var combatData = player.GetComponent<CombatData>();
 
-        combatData.Heal((ushort)(HealthMod * Multiplier));
+        combatData.Heal(HealthMod * Multiplier);
 
         base.Consume();
     }
