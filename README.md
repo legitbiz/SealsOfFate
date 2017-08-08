@@ -8,7 +8,7 @@ Copyright © 2017 Brandon Craig, Evan French, Matthew Gieger, Connor Kuehl, Jere
 
 ## Overview
 
-Seals of Fate is a prototype rogue-like built in the Unity engine using C#. Current it contains one procedural generated level with enemies and food pickups. It has basic combat in with the framework implemented to design more complex attacks.
+Seals of Fate is a prototype rogue-like built in the Unity engine using C#. Currently it contains one procedural generated level with enemies and food pickups. It has basic combat in with the framework implemented to design more complex attacks.
 
 ## Setup instructions
 
@@ -24,7 +24,7 @@ Seals of Fate is a prototype rogue-like built in the Unity engine using C#. Curr
 
 Move with the arrow keys. Play moves in short turn-steps, after each move, all enemies and other entities in the game world move after each of your moves. To attack an enemy, move into them. Collecting fish restores HP.
 
-To win, defeat all penguins in the level. If all your HP depletes, you die and lose.
+To win, defeat all penguins in the level. If all your HP reaches 0, you die and lose.
 
 ## Planned Features
 A sample of some of the planned features is below, but for full details, see [waffle](http://waffle.io/legitbiz/SealsOfFate) or the [issue tracker](https://github.com/legitbiz/SealsOfFate/issues).
