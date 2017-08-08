@@ -2,9 +2,14 @@ Project-Wide Issues on Waffle: [![Stories in Ready](https://badge.waffle.io/legi
 
 # Seals Of Fate: Hats of Destiny; Icebergs of Doom
 
-Copyright © 2017 A Legitimate Business, LLC and the following individuals: Brandon Craig, Evan French, Matthew Gieger, Connor Kuehl, Jeremiah Peschka, Andrew Waugh, Douglas Whitley III
+Copyright © 2017 Brandon Craig, Evan French, Matthew Gieger, Connor Kuehl, Jeremiah Peschka, Andrew Waugh, Douglas Whitley III
 
-Seals of Fate is a prototype rogue-like built in the Unity engine using C#. 
+![Seals Of Fate](Assets/UI/Sof Title.png)
+
+## Overview
+Right now, a single level is procedural generated with enemies and food pickups. We have basic combat in with the frameworks for designing and implementing new attacks.
+
+Seals of Fate is a prototype rogue-like built in the Unity engine using C#. Current it contains one procedural generated level with enemies and food pickups. It has basic combat in with the framework implemented to design more complex attacks.
 
 ## Setup instructions
 
@@ -20,12 +25,13 @@ Seals of Fate is a prototype rogue-like built in the Unity engine using C#.
 
 Move with the arrow keys. Play moves in short turn-steps, after each move, all enemies and other entities in the game world move after each of your moves. To attack an enemy, move into them. Collecting fish restores HP.
 
+To win, defeat all penguins in the level. If all your HP depletes, you die and lose.
+
 ## Planned Features
-A sample of some of the planned features is below, but for full details, see waffle or the issue tracker.
+A sample of some of the planned features is below, but for full details, see [waffle](http://waffle.io/legitbiz/SealsOfFate) or the [issue tracker](https://github.com/legitbiz/SealsOfFate/issues).
 
 ### Upcoming
 
-* Fast, Medium, and Slow speeds, where faster creatures can take turns more often.
 * Placeholder win and loss conditions
 * Combat UI
 
@@ -34,12 +40,13 @@ A sample of some of the planned features is below, but for full details, see waf
 * Skills and ranged attacks
 * Status Effects
 * Basic loot system
+* Fast, Medium, and Slow speeds, where faster creatures can take turns more often.
 
 ### Long Term
 
 * Hat-based class system
 * Lore books
-* More puns than good taste really would reccomend
+* More puns than good taste really would recommend
 * Boss enemies
 * Multiple Levels
 * Much more!
@@ -49,9 +56,6 @@ A sample of some of the planned features is below, but for full details, see waf
 * Project-Wide issues are on [Waffle.io](http://waffle.io/legitbiz/SealsOfFate) and on the [github issues page](https://github.com/legitbiz/SealsOfFate/issues).
 
 * AI specific issues and project status can be found on the [github kanban board](https://github.com/Zonr0/SealsOfFate/projects/1) on the AI fork. If there is a conflict between the two project boards, the project-wide ones take precedence.
-
-### Overview
-Currently, focus is on implementing MVP features in order to create a playable prototype with all basic features by the end of August. Right now, a single level is procedurally generated with enemies and food pickups. We have basic combat in with the frameworks for designing and implementing new attacks.
 
 ## License
 
