@@ -7,7 +7,6 @@ Copyright © 2017 Brandon Craig, Evan French, Matthew Gieger, Connor Kuehl, Jere
 ![](/Assets/UI/SoF%20Title.png)
 
 ## Overview
-Right now, a single level is procedural generated with enemies and food pickups. We have basic combat in with the frameworks for designing and implementing new attacks.
 
 Seals of Fate is a prototype rogue-like built in the Unity engine using C#. Current it contains one procedural generated level with enemies and food pickups. It has basic combat in with the framework implemented to design more complex attacks.
 
