@@ -4,7 +4,7 @@ Project-Wide Issues on Waffle: [![Stories in Ready](https://badge.waffle.io/legi
 
 Copyright © 2017 Brandon Craig, Evan French, Matthew Gieger, Connor Kuehl, Jeremiah Peschka, Andrew Waugh, Douglas Whitley III
 
-![Seals Of Fate](/Assets/UI/Sof%20Title.png)
+![](/Assets/UI/SoF%20Title.png)
 
 ## Overview
 Right now, a single level is procedural generated with enemies and food pickups. We have basic combat in with the frameworks for designing and implementing new attacks.
