@@ -8,7 +8,7 @@ Copyright © 2017 Brandon Craig, Evan French, Matthew Gieger, Connor Kuehl, Jere
 
 ## Overview
 
-Seals of Fate is a prototype rogue-like built in the Unity engine using C#. Currently it contains one procedural generated level with enemies and food pickups. It has basic combat in with the framework implemented to design more complex attacks.
+Seals of Fate is a prototype rogue-like built in the Unity engine using C#. Currently it contains one procedurally generated level with enemies and food pickups. It has basic combat in with the framework implemented to design more complex attacks.
 
 ## Setup instructions
 
