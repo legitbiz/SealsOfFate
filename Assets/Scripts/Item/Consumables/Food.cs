@@ -30,9 +30,7 @@ public class Food : Consumable {
     /// </summary>
     public override void Consume() {
         var player = FindObjectOfType<Player>();
-        var combatData = player.GetComponent<CombatData>();
-
-        combatData.Heal(HealthMod * Multiplier);
+        player.Heal(HealthMod * Multiplier);
 
         base.Consume();
     }

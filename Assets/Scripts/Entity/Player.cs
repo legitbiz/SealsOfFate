@@ -221,8 +221,8 @@ public class Player : MovingObject, IAttackable {
             case "Pick Up":
                 // Add pointsPerFood to the players current food total.
                 _food += PointsPerFood;
-                 // Disable the food object the player collided with.
-                 Debug.Log("The Pick Up has been encountered!");
+                // Disable the food object the player collided with.
+                Debug.Log("The Pick Up has been encountered!");
                 other.gameObject.SetActive(false);
                 var food = other.gameObject.GetComponent<Food>();
                 food.Consume();
@@ -270,5 +270,19 @@ public class Player : MovingObject, IAttackable {
         if (_food <= 0) {
             GameManager.Instance.GameOver();
         }
+    }
+
+    /// <summary>
+    ///     Heals the player by some number of Health Points
+    /// </summary>
+    /// <param name="healthPoints">The number of health points to restore</param>
+    public void Heal(int healthPoints) {
+        _combatData = GetComponent<CombatData>();
+        _combatData.HealthPoints += healthPoints;
+
+        healthBar.sizeDelta = new Vector2(_combatData.HealthPoints,
+                                          healthBar.sizeDelta.y);
+
+        GameManager.Instance.PlayerHealth += healthPoints;
     }
 }
