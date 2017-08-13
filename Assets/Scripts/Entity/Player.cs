@@ -278,11 +278,11 @@ public class Player : MovingObject, IAttackable {
     /// <param name="healthPoints">The number of health points to restore</param>
     public void Heal(int healthPoints) {
         _combatData = GetComponent<CombatData>();
-        _combatData.HealthPoints += healthPoints;
+        _combatData.Heal(healthPoints);
 
         healthBar.sizeDelta = new Vector2(_combatData.HealthPoints,
                                           healthBar.sizeDelta.y);
 
-        GameManager.Instance.PlayerHealth += healthPoints;
+        GameManager.Instance.PlayerHealth = _combatData.HealthPoints;
     }
 }
