@@ -261,8 +261,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86b9d09d417ff6943ba1fb04e69ead27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxLevel: 0
-  PlayerHealth: 0
+  MaxLevel: 100
+  PlayerHealth: 100
   PlayersTurn: 1
 --- !u!4 &1978801243
 Transform:

@@ -71,9 +71,7 @@ public class Player : MovingObject, IAttackable {
     public void Attack(IAttackable defender) {
         _combatData = GetComponent<CombatData>();
         var damage = CombatData.ComputeDamage(_combatData.ToTemporaryCombatData(), defender.ToTemporaryCombatData());
-
         Debug.Log(String.Format("player inflicts {0} damage on penguin", damage.DefenderDamage.HealthDamage));
-
         defender.TakeDamage(damage.DefenderDamage);
         TakeDamage(damage.AttackerDamage);
     }
@@ -93,13 +91,14 @@ public class Player : MovingObject, IAttackable {
 
         _combatData.ManaPoints -= damage.ManaDamage;
 
-        if (_combatData.HealthPoints > 0) {
-            return;
+        if (_combatData.HealthPoints <= 0)
+        {
+            Debug.Log("In theory, this penguin is dead");
+            Destroy(gameObject);
+            // TODO Trigger game over animation
+            CheckIfGameOver();
+            throw new Exception("Holy cats, you're dead!");
         }
-
-        Destroy(gameObject);
-        // TODO Trigger game over animation
-        throw new Exception("Holy cats, you're dead!");
     }
 
     /// <summary>
@@ -109,6 +108,11 @@ public class Player : MovingObject, IAttackable {
         // Get a component reference to the Player's animator component
         _animator = GetComponent<Animator>();
         _combatData = GetComponent<CombatData>();
+
+        //// Get the current food point total stored in GameManager.instance between levels.
+        if (GameManager.Instance.PlayerHealth > 0) {
+            _combatData.HealthPoints = GameManager.Instance.PlayerHealth;
+        } 
 
         // Call the Start function of the MovingObject base class.
         base.Start();
@@ -226,15 +230,6 @@ public class Player : MovingObject, IAttackable {
                 other.gameObject.SetActive(false);
                 var food = other.gameObject.GetComponent<Food>();
                 food.Consume();
-
-                break;
-            case "Soda":
-                // Add pointsPerSoda to players food points total
-                _food += PointsPerSoda;
-
-
-                // Disable the soda object the player collided with.
-                other.gameObject.SetActive(false);
                 break;
         }
     }
@@ -267,7 +262,7 @@ public class Player : MovingObject, IAttackable {
     /// </summary>
     private void CheckIfGameOver() {
         // Check if food point total is less than or equal to zero.
-        if (_food <= 0) {
+        if (_combatData.HealthPoints <= 0) {
             GameManager.Instance.GameOver();
         }
     }

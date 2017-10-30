@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Assets.Scripts.LevelGeneration;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 // Level Manager for the Seals of Fate Handles creating the level and
@@ -149,6 +150,9 @@ private void Update() {
         /// <summary>
         ///     Something, something, end of the game.
         /// </summary>
-        public void GameOver() { }
+        public void GameOver() {
+            SceneManager.LoadScene("GameOver"); 
+            
+            } 
     }
 }
